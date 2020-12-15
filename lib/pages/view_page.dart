@@ -1,0 +1,488 @@
+import 'package:flutter/material.dart';
+import 'package:local_segmenter/core/constants.dart';
+import 'package:local_segmenter/functionality/categories.dart';
+import 'package:local_segmenter/functionality/navigation.dart';
+import 'package:local_segmenter/functionality/paths.dart';
+import 'package:local_segmenter/functionality/signature.dart';
+import 'package:local_segmenter/widgets/custom_flat_button.dart';
+import 'package:local_segmenter/widgets/flushbars.dart';
+import 'package:local_segmenter/widgets/loading.dart';
+import 'package:local_segmenter/widgets/points_info.dart';
+import 'package:local_segmenter/widgets/zoom_draw_icon.dart';
+import 'package:local_segmenter/widgets/zoom_window.dart';
+import 'package:photo_view/photo_view.dart';
+
+class ViewPage extends StatelessWidget {
+  final int counter;
+  final String username;
+  final List<String> images;
+
+  const ViewPage(
+      {Key key,
+      @required this.counter,
+      @required this.username,
+      @required this.images})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.0),
+        child: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.view_column_rounded),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          elevation: 0,
+          title: CustomNavigationAppBarViewPage(),
+          backgroundColor: Colors.black,
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: DrawView(
+        username: username,
+        counter: counter,
+        images: images,
+      ),
+    );
+  }
+}
+
+/// body of main Page as stateful Widget
+class DrawView extends StatefulWidget {
+  final int counter;
+  final String username;
+  final List<String> images;
+
+  const DrawView(
+      {Key key,
+      @required this.counter,
+      @required this.username,
+      @required this.images})
+      : super(key: key);
+
+  @override
+  _DrawViewState createState() =>
+      _DrawViewState(count: counter, username: username, images: images);
+}
+
+/// Main State Management and widget building
+class _DrawViewState extends State<DrawView> {
+  List<Offset> _points = <Offset>[];
+  List<Offset> _pointsSaved = <Offset>[];
+  int _lenList = 1;
+  int count;
+  String dropdownValue = classCategoryList[0];
+  String dropdownValue2 = classCategoryList2[0];
+  bool zoomMode = false;
+  PhotoViewController controller;
+
+  final double widthFac = 1;
+  final double heightFac = 0.65;
+  final String username;
+  final List<String> images;
+
+  _DrawViewState(
+      {@required this.images, @required this.username, @required this.count});
+
+  @override
+  void initState() {
+    super.initState();
+    controller = PhotoViewController();
+    setSavedPoints().then(
+      (_) => setState(() {
+        _lenList = images.length;
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _lenList > 0 ? buildLoadedView(context) : PersonalLoadingWidget();
+  }
+
+  Widget buildLoadedView(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    final double drawWidth = size.width * widthFac;
+    final double drawHeight = size.height * heightFac;
+    final String imageName = _lenList > 1 ? images[count] : 'assets/demo.PNG';
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          buildDrawImageScreen(drawWidth, drawHeight, context, size, imageName),
+          SizedBox(height: size.height * 0.02),
+          buildDropdownButton(_setEntity, dropdownValue, classCategoryList),
+          SizedBox(height: size.height * 0.02),
+          buildButtonRow(),
+          SizedBox(height: size.height * 0.02),
+          buildBottomSlider(),
+        ],
+      ),
+    );
+  }
+
+  Slider buildBottomSlider() {
+    return Slider(
+      activeColor: kPrimaryColor,
+      inactiveColor: kPrimaryColor.withOpacity(0.4),
+      value: count.toDouble(),
+      onChanged: (newCount) {
+        _decreaseIncreaseWithAlertDialog(_setNewCountValue, newCount: newCount);
+      },
+      min: 0,
+      max: (_lenList - 1).toDouble(),
+      label: "$count",
+    );
+  }
+
+  _setNewCountValue(double newCount) {
+    _points.clear();
+    controller.reset();
+    dropdownValue = classCategoryList[0];
+    dropdownValue2 = classCategoryList2[0];
+    count = newCount.toInt();
+    setSavedPoints();
+    setState(() {});
+  }
+
+  /// Load Image from repo and display a Canvas to draw above
+  SizedBox buildDrawImageScreen(double drawWidth, double drawHeight,
+      BuildContext context, Size size, String imageName) {
+    return SizedBox(
+      width: drawWidth,
+      height: drawHeight,
+      child: zoomMode
+          ? DrawZoomWindow(
+              imageName: imageName,
+              controller: controller,
+            )
+          : buildContainerWithGesture(
+              context, drawHeight, drawWidth, size, imageName),
+    );
+  }
+
+  Container buildContainerWithGesture(BuildContext context, double drawHeight,
+      double drawWidth, Size size, String imageName) {
+    return Container(
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onPanUpdate: (DragUpdateDetails details) {
+          setState(
+            () {
+              final RenderBox object = context.findRenderObject();
+              final Offset _localPosition =
+                  object.globalToLocal(details.globalPosition);
+              if (_localPosition.dy < drawHeight &&
+                  _localPosition.dx < drawWidth) {
+                _points = List.from(_points)..add(_localPosition);
+              }
+            },
+          );
+        },
+        onPanEnd: (DragEndDetails details) => _points.add(null),
+        child: Stack(
+          children: [
+            CustomPaint(
+              painter: Signature(
+                points: _points,
+                color: Colors.deepOrange,
+                strokeWidth: 3,
+              ),
+              size: size,
+            ),
+            CustomPaint(
+              painter: Signature(
+                points: _pointsSaved,
+                color: kSecondaryColor,
+                strokeWidth: 3,
+              ),
+              size: size,
+            ),
+          ],
+        ),
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(60),
+          bottomRight: Radius.circular(60),
+        ),
+        color: Colors.black,
+        image: DecorationImage(
+          image: AssetImage(imageName),
+          fit: BoxFit.fitWidth,
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 10),
+            blurRadius: 10,
+            color: kPrimaryColor.withOpacity(0.3),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildDropdownButton(
+      Function doIt, String locValue, List<String> locList) {
+    final Color locColor =
+        locValue == locList[0] ? Colors.grey : kSecondaryColor;
+
+    return Container(
+      width: 300,
+      height: 50,
+      decoration: BoxDecoration(
+        color: locColor.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Center(
+            child: DropdownButton<String>(
+              underline: Container(
+                height: 1,
+                color: locColor,
+              ),
+              value: locValue,
+              icon: Icon(
+                Icons.arrow_circle_down,
+                color: locColor,
+              ),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              onChanged: (String newValue) {
+                doIt(newValue);
+              },
+              items: locList.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      color: locColor,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Display the 4 Buttons and their functionality
+  Row buildButtonRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Spacer(),
+        IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: kPrimaryColor.withOpacity(0.8),
+          onPressed: () => _decreaseIncreaseWithAlertDialog(_decrease),
+        ),
+        Spacer(),
+        TitleWithCustomButton(
+          buttonName: 'Save',
+          press: _saveFunc,
+        ),
+        Spacer(),
+        FlatButton(
+          onPressed: () {
+            setState(
+              () {
+                controller.reset();
+                zoomMode = !zoomMode;
+              },
+            );
+          },
+          child: ToggleDrawZoomIcon(zoomMode: zoomMode),
+        ),
+        Spacer(),
+        TitleWithCustomButton(
+          buttonName: 'Clear',
+          press: _clearFunc,
+        ),
+        Spacer(),
+        IconButton(
+          icon: Icon(
+            Icons.arrow_forward_ios,
+            color: kPrimaryColor.withOpacity(0.8),
+          ),
+          onPressed: () => _decreaseIncreaseWithAlertDialog(_increase),
+        ),
+        Spacer(),
+      ],
+    );
+  }
+
+  void _setEntity(String newValue) {
+    setState(() {
+      dropdownValue = newValue;
+      _saveFunc();
+    });
+  }
+
+  void _setClinicalWorkflow(String newValue) {
+    setState(() {
+      dropdownValue2 = newValue;
+      _saveFunc();
+    });
+  }
+
+  /// Define the string to save
+  Future<String> generateSaveString() async {
+    final Size size = MediaQuery.of(context).size;
+    final int drawWidth = (size.width * widthFac).toInt();
+    final int drawHeight = (size.height * heightFac).toInt();
+
+    final int imgWidth = 5;
+    final int imgHeight = 5;
+
+    String generatedData = formatPoints(_points);
+    generatedData =
+        '$generatedData///$drawWidth, $drawHeight, $imgWidth, $imgHeight///$dropdownValue///$dropdownValue2';
+    return generatedData;
+  }
+
+  /// load the points from disk
+  Future setSavedPoints() async {
+    try {
+      final String fileName = formatFileName(images[count], username);
+      final String savedData = await readContent(fileName);
+      final String pointsData = savedData.split('///')[0];
+      _pointsSaved = getPointsFromData(pointsData);
+      if (savedData.split('///').length > 2) {
+        dropdownValue = savedData.split('///')[2];
+      }
+      if (savedData.split('///').length > 3) {
+        dropdownValue2 = savedData.split('///')[3];
+      }
+    } on Exception catch (_) {
+      _pointsSaved.clear();
+      dropdownValue = classCategoryList[0];
+      dropdownValue2 = classCategoryList2[0];
+    }
+  }
+
+  /// Switch image, reduce int and clear points
+  void _decreaseIncreaseWithAlertDialog(Function performFunction,
+      {double newCount = 0}) async {
+    print('entered');
+    if (_points.length > 1) {
+      print('points');
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("Do you want to save?"),
+          actions: [
+            FlatButton(
+                onPressed: () {
+                  _saveFunc();
+                  performFunction(newCount);
+                  Navigator.pop(context);
+                },
+                child: Text('Yes')),
+            FlatButton(
+              onPressed: () {
+                performFunction(newCount);
+                Navigator.pop(context);
+              },
+              child: Text('No'),
+            )
+          ],
+        ),
+      );
+    } else {
+      performFunction(newCount);
+    }
+  }
+
+  void _decrease(double newCount) async {
+    if (count - 1 >= 0) {
+      count--;
+    }
+    controller.reset();
+    _points.clear();
+    dropdownValue = classCategoryList[0];
+    dropdownValue2 = classCategoryList2[0];
+    await setSavedPoints();
+    setState(() {});
+  }
+
+  void _increase(double newCount) async {
+    if (count + 1 < _lenList) {
+      count++;
+    }
+    controller.reset();
+    _points.clear();
+    dropdownValue = classCategoryList[0];
+    dropdownValue2 = classCategoryList2[0];
+    await setSavedPoints();
+    setState(() {});
+  }
+
+  /// Save the current segmentation in local repo
+  void _saveFunc() async {
+    controller.reset();
+    final String fileName = formatFileName(images[count], username);
+    if (_points.length > 0) {
+      //points and possibly category
+      _pointsSaved = List.from(_points);
+      await writeContent(fileName, await generateSaveString());
+      await setSavedPoints();
+      _points.clear();
+      setState(() {});
+    } else if (dropdownValue != classCategoryList[0]) {
+      // only category
+      _points = List.from(_pointsSaved);
+      await writeContent(fileName, await generateSaveString());
+      await setSavedPoints();
+      _points.clear();
+      setState(() {});
+    } else if (dropdownValue2 != classCategoryList2[0]) {
+      // only category
+      _points = List.from(_pointsSaved);
+      await writeContent(fileName, await generateSaveString());
+      await setSavedPoints();
+      _points.clear();
+      setState(() {});
+    } else {
+      showEmptyFlushbar().show(context);
+    }
+  }
+
+  /// Clear the current segmentation
+  void _clearFunc() async {
+    final String fileName = formatFileName(images[count], username);
+    if (_points.length > 0) {
+      _points.clear();
+      setState(() {});
+    } else if (dropdownValue != classCategoryList[0] ||
+        dropdownValue2 != classCategoryList2[0]) {
+      if (_pointsSaved.length > 0) {
+        _points = List.from(_pointsSaved);
+      }
+      dropdownValue = classCategoryList[0];
+      dropdownValue2 = classCategoryList2[0];
+      await writeContent(fileName, await generateSaveString());
+      _points.clear();
+      setState(() {});
+    } else if (_pointsSaved.length > 0) {
+      _pointsSaved.clear();
+      dropdownValue = classCategoryList[0];
+      dropdownValue2 = classCategoryList2[0];
+      await deleteContent(fileName);
+      setState(() {});
+    } else {
+      showEmptyFlushbar().show(context);
+    }
+  }
+}
