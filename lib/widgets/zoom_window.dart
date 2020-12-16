@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
-import 'package:local_segmenter/functionality/signature.dart';
 import 'package:photo_view/photo_view.dart';
+
+import '../core/constants.dart';
+import '../functionality/signature.dart';
 
 class DrawZoomWindow extends StatefulWidget {
   const DrawZoomWindow({

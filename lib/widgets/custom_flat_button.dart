@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
+import '../core/constants.dart';
 
 class TitleWithCustomButton extends StatelessWidget {
   const TitleWithCustomButton({

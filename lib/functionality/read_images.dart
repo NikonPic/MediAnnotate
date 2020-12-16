@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:local_segmenter/functionality/paths.dart';
+import 'paths.dart';
 
 Future<List<String>> initImages() async {
   // >> To get paths you need these 2 lines

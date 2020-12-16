@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
-import 'package:local_segmenter/functionality/navigation.dart';
-import 'package:local_segmenter/functionality/paths.dart';
-import 'package:local_segmenter/functionality/read_images.dart';
-import 'package:local_segmenter/widgets/util_card.dart';
-import 'package:local_segmenter/pages/view_page.dart';
-import 'package:local_segmenter/functionality/categories.dart';
 
 import '../core/constants.dart';
+import '../functionality/categories.dart';
+import '../functionality/navigation.dart';
+import '../functionality/paths.dart';
+import '../functionality/read_images.dart';
 import '../widgets/loading.dart';
+import '../widgets/util_card.dart';
+import 'view_page.dart';
 
 class ScrollPage extends StatelessWidget {
   const ScrollPage({Key key, @required this.username}) : super(key: key);

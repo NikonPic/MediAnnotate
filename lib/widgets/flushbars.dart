@@ -1,6 +1,7 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
+
+import '../core/constants.dart';
 
 Flushbar showSaveFlushbar() {
   return Flushbar(

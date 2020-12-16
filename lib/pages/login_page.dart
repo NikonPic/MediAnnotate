@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
-import 'package:local_segmenter/widgets/flushbars.dart';
-import 'package:local_segmenter/pages/scroll_page.dart';
+import '../core/constants.dart';
+import '../widgets/flushbars.dart';
+import 'scroll_page.dart';
 
 class LoginWithName extends StatefulWidget {
   @override

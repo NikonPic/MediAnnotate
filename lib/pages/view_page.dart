@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
-import 'package:local_segmenter/functionality/categories.dart';
-import 'package:local_segmenter/functionality/navigation.dart';
-import 'package:local_segmenter/functionality/paths.dart';
-import 'package:local_segmenter/functionality/signature.dart';
-import 'package:local_segmenter/widgets/custom_flat_button.dart';
-import 'package:local_segmenter/widgets/flushbars.dart';
-import 'package:local_segmenter/widgets/loading.dart';
-import 'package:local_segmenter/widgets/points_info.dart';
-import 'package:local_segmenter/widgets/zoom_draw_icon.dart';
-import 'package:local_segmenter/widgets/zoom_window.dart';
 import 'package:photo_view/photo_view.dart';
+
+import '../core/constants.dart';
+import '../functionality/categories.dart';
+import '../functionality/navigation.dart';
+import '../functionality/paths.dart';
+import '../functionality/signature.dart';
+import '../widgets/custom_flat_button.dart';
+import '../widgets/flushbars.dart';
+import '../widgets/loading.dart';
+import '../widgets/points_info.dart';
+import '../widgets/zoom_draw_icon.dart';
+import '../widgets/zoom_window.dart';
 
 class ViewPage extends StatelessWidget {
   final int counter;

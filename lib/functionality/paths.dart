@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/functionality/categories.dart';
-import 'package:local_segmenter/widgets/points_info.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../widgets/points_info.dart';
+import 'categories.dart';
 
 Future<String> get _localPath async {
   //final directory = await getApplicationDocumentsDirectory();

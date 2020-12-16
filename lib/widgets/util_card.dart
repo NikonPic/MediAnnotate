@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/core/constants.dart';
-import 'package:local_segmenter/functionality/categories.dart';
-import 'package:local_segmenter/functionality/paths.dart';
+
+import '../core/constants.dart';
+import '../functionality/categories.dart';
+import '../functionality/paths.dart';
 
 class RecommendUtilCard extends StatelessWidget {
   const RecommendUtilCard({

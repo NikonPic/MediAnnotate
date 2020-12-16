@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:local_segmenter/pages/login_page.dart';
 import 'core/constants.dart';
+import 'pages/login_page.dart';
 
 void main() => runApp(AppWidget());
 
