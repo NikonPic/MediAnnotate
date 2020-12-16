@@ -51,7 +51,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   final String username;
 
   List<String> _images = <String>[];
-  int _lenList = 1;
+  int _lenList = 0;
   bool _loaded = false;
   List<bool> _done = <bool>[];
   List<bool> _selectImages = [true, false, false];
@@ -147,6 +147,9 @@ class _ScrollBodyState extends State<ScrollBody> {
   Future<void> _resetActiveImages(int select) async {
     List<String> _newImages =
         await initImagesModified(username, select, _filterMode);
+    if (_newImages.length == 1 && _newImages[0] == "") {
+      _newImages = [];
+    }
     setState(() {
       _images = _newImages;
       _lenList = _newImages.length;
@@ -155,7 +158,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   }
 
   Container buildScrollView(Size size) {
-    return _lenList > 1
+    return _lenList > 0
         ? Container(
             height: size.height * 0.88,
             child: Scrollbar(

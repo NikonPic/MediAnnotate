@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
-
 import '../core/constants.dart';
 import '../functionality/categories.dart';
 import '../functionality/navigation.dart';
@@ -78,8 +76,8 @@ class _DrawViewState extends State<DrawView> {
   int count;
   String dropdownValue = classCategoryList[0];
   String dropdownValue2 = classCategoryList2[0];
-  bool zoomMode = false;
-  PhotoViewController controller;
+  bool drawMode = true;
+  TransformationController controller;
 
   final double widthFac = 1;
   final double heightFac = 0.65;
@@ -92,7 +90,7 @@ class _DrawViewState extends State<DrawView> {
   @override
   void initState() {
     super.initState();
-    controller = PhotoViewController();
+    controller = TransformationController();
     setSavedPoints().then(
       (_) => setState(() {
         _lenList = images.length;
@@ -109,7 +107,7 @@ class _DrawViewState extends State<DrawView> {
     final Size size = MediaQuery.of(context).size;
     final double drawWidth = size.width * widthFac;
     final double drawHeight = size.height * heightFac;
-    final String imageName = _lenList > 1 ? images[count] : 'assets/demo.PNG';
+    final String imageName = _lenList > 0 ? images[count] : 'assets/demo.PNG';
 
     return SingleChildScrollView(
       child: Column(
@@ -143,12 +141,14 @@ class _DrawViewState extends State<DrawView> {
 
   _setNewCountValue(double newCount) {
     _points.clear();
-    controller.reset();
+
     dropdownValue = classCategoryList[0];
     dropdownValue2 = classCategoryList2[0];
     count = newCount.toInt();
     setSavedPoints();
-    setState(() {});
+    setState(() {
+      controller.value = Matrix4.identity();
+    });
   }
 
   /// Load Image from repo and display a Canvas to draw above
@@ -157,13 +157,27 @@ class _DrawViewState extends State<DrawView> {
     return SizedBox(
       width: drawWidth,
       height: drawHeight,
-      child: zoomMode
-          ? DrawZoomWindow(
-              imageName: imageName,
-              controller: controller,
-            )
-          : buildContainerWithGesture(
-              context, drawHeight, drawWidth, size, imageName),
+      child: Stack(children: [
+        buildContainerWithGesture(
+            context, drawHeight, drawWidth, size, imageName),
+        Row(
+          children: [
+            Spacer(),
+            IconButton(
+              icon: Icon(
+                Icons.undo_sharp,
+                color: kPrimaryColor.withOpacity(0.8),
+                size: 30,
+              ),
+              onPressed: () {
+                setState(() {
+                  _points = redoPoints(_points);
+                });
+              },
+            ),
+          ],
+        )
+      ]),
     );
   }
 
@@ -171,59 +185,52 @@ class _DrawViewState extends State<DrawView> {
       double drawWidth, Size size, String imageName) {
     return Container(
       alignment: Alignment.center,
-      child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
+      child: InteractiveViewer(
+        transformationController: controller,
+        panEnabled: false,
+        onInteractionStart: (ScaleStartDetails details) {},
+        onInteractionUpdate: (ScaleUpdateDetails details) {
           setState(
             () {
-              final RenderBox object = context.findRenderObject();
-              final Offset _localPosition =
-                  object.globalToLocal(details.globalPosition);
-              if (_localPosition.dy < drawHeight &&
-                  _localPosition.dx < drawWidth) {
+              if (drawMode) {
+                final Offset _localPosition = details.focalPoint;
                 _points = List.from(_points)..add(_localPosition);
               }
             },
           );
         },
-        onPanEnd: (DragEndDetails details) => _points.add(null),
+        onInteractionEnd: (_) {
+          setState(
+            () {
+              if (drawMode) {
+                _points.add(null);
+              }
+            },
+          );
+        },
+        minScale: 1.0,
+        maxScale: 6.0,
         child: Stack(
           children: [
+            ImageChild(imageName: imageName),
             CustomPaint(
               painter: Signature(
-                points: _points,
-                color: Colors.deepOrange,
-                strokeWidth: 3,
+                points: _pointsSaved,
+                color: kSecondaryColor,
+                strokeWidth: 2,
               ),
               size: size,
             ),
             CustomPaint(
               painter: Signature(
-                points: _pointsSaved,
-                color: kSecondaryColor,
-                strokeWidth: 3,
+                points: _points,
+                color: Colors.deepOrange,
+                strokeWidth: 2,
               ),
               size: size,
             ),
           ],
         ),
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(60),
-          bottomRight: Radius.circular(60),
-        ),
-        color: Colors.black,
-        image: DecorationImage(
-          image: AssetImage(imageName),
-          fit: BoxFit.fitWidth,
-        ),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 10),
-            blurRadius: 10,
-            color: kPrimaryColor.withOpacity(0.3),
-          )
-        ],
       ),
     );
   }
@@ -299,12 +306,12 @@ class _DrawViewState extends State<DrawView> {
           onPressed: () {
             setState(
               () {
-                controller.reset();
-                zoomMode = !zoomMode;
+                controller.toScene(Offset.zero);
+                drawMode = !drawMode;
               },
             );
           },
-          child: ToggleDrawZoomIcon(zoomMode: zoomMode),
+          child: ToggleDrawZoomIcon(zoomMode: !drawMode),
         ),
         Spacer(),
         TitleWithCustomButton(
@@ -376,9 +383,7 @@ class _DrawViewState extends State<DrawView> {
   /// Switch image, reduce int and clear points
   void _decreaseIncreaseWithAlertDialog(Function performFunction,
       {double newCount = 0}) async {
-    print('entered');
     if (_points.length > 1) {
-      print('points');
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -410,7 +415,7 @@ class _DrawViewState extends State<DrawView> {
     if (count - 1 >= 0) {
       count--;
     }
-    controller.reset();
+    controller.value = Matrix4.identity();
     _points.clear();
     dropdownValue = classCategoryList[0];
     dropdownValue2 = classCategoryList2[0];
@@ -422,7 +427,7 @@ class _DrawViewState extends State<DrawView> {
     if (count + 1 < _lenList) {
       count++;
     }
-    controller.reset();
+    controller.value = Matrix4.identity();
     _points.clear();
     dropdownValue = classCategoryList[0];
     dropdownValue2 = classCategoryList2[0];
@@ -432,7 +437,7 @@ class _DrawViewState extends State<DrawView> {
 
   /// Save the current segmentation in local repo
   void _saveFunc() async {
-    controller.reset();
+    controller.value = Matrix4.identity();
     final String fileName = formatFileName(images[count], username);
     if (_points.length > 0) {
       //points and possibly category

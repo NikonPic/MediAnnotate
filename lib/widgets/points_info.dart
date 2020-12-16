@@ -28,14 +28,16 @@ class PointsInfo extends StatelessWidget {
             ),
           ),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: kPrimaryColor.withOpacity(0.22),
-              boxShadow: [
-                BoxShadow(
-                    offset: Offset(10, 10),
-                    blurRadius: 10,
-                    color: kPrimaryColor.withOpacity(0.1))
-              ]),
+            borderRadius: BorderRadius.circular(10),
+            color: kPrimaryColor.withOpacity(0.22),
+            boxShadow: [
+              BoxShadow(
+                offset: Offset(10, 10),
+                blurRadius: 10,
+                color: kPrimaryColor.withOpacity(0.1),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -51,7 +53,7 @@ String formatPoints(List<Offset> points) {
       .map(
         (offset) {
           if (offset != null) {
-            return '${offset.dx.round()};${offset.dy.round()}';
+            return '${offset.dx};${offset.dy}';
           }
           return '';
         },
@@ -60,9 +62,21 @@ String formatPoints(List<Offset> points) {
       .toString()
       .replaceAll('[', '')
       .replaceAll(']', '')
-      .replaceAll(',', '.')
+      .replaceAll(',', '/')
       .replaceAll(';', ',')
-      .replaceAll('.', ';');
+      .replaceAll('/', ';');
+}
+
+List<Offset> redoPoints(List<Offset> points) {
+  // process trough all points from the until you meet the "null" and remove everything until there
+  int newMaxint = 0;
+  for (int i = points.length - 2; i > 0; i--) {
+    if (points[i] == null) {
+      newMaxint = i;
+      i = 0;
+    }
+  }
+  return points.sublist(0, newMaxint);
 }
 
 List<Offset> getPointsFromData(String data) {
