@@ -79,6 +79,11 @@ class _DrawViewState extends State<DrawView> {
   bool drawMode = true;
   TransformationController controller;
 
+  //scale tacking
+  bool watchScale = false;
+  bool scaleChange = false;
+  double initScale = 1.0;
+
   final double widthFac = 1;
   final double heightFac = 0.65;
   final String username;
@@ -188,8 +193,30 @@ class _DrawViewState extends State<DrawView> {
       child: InteractiveViewer(
         transformationController: controller,
         panEnabled: false,
-        onInteractionStart: (ScaleStartDetails details) {},
+        onInteractionStart: (ScaleStartDetails details) {
+          print(details.toString());
+          setState(
+            () {
+              watchScale = true;
+              scaleChange = false;
+            },
+          );
+        },
         onInteractionUpdate: (ScaleUpdateDetails details) {
+          print(details.toString());
+          if (!watchScale) {
+            if (details.scale != initScale) {
+              setState(() {
+                scaleChange = true;
+              });
+            }
+          }
+          if (watchScale) {
+            setState(() {
+              initScale = details.scale;
+              watchScale = false;
+            });
+          }
           setState(
             () {
               if (drawMode) {
@@ -205,6 +232,10 @@ class _DrawViewState extends State<DrawView> {
               if (drawMode) {
                 _points.add(null);
               }
+              if (scaleChange) {
+                _points = redoPoints(_points);
+              }
+              _points = redoShortPoints(_points);
             },
           );
         },

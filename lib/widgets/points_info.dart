@@ -67,8 +67,9 @@ String formatPoints(List<Offset> points) {
       .replaceAll('/', ';');
 }
 
-List<Offset> redoPoints(List<Offset> points) {
+List<Offset> redoShortPoints(List<Offset> points, [int minVal = 20]) {
   // process trough all points from the until you meet the "null" and remove everything until there
+
   int newMaxint = 0;
   for (int i = points.length - 2; i > 0; i--) {
     if (points[i] == null) {
@@ -76,7 +77,29 @@ List<Offset> redoPoints(List<Offset> points) {
       i = 0;
     }
   }
-  return points.sublist(0, newMaxint);
+  // if the used points are below a certain value do not include
+  if (points.length - newMaxint < minVal) {
+    List<Offset> newPoints = points.sublist(0, newMaxint);
+    newPoints.add(null);
+    return newPoints;
+  }
+  return points;
+}
+
+List<Offset> redoPoints(List<Offset> points) {
+  // process trough all points from the until you meet the "null" and remove everything until there
+  int newMaxint = 0;
+  List<Offset> newPoints;
+
+  for (int i = points.length - 2; i > 0; i--) {
+    if (points[i] == null) {
+      newMaxint = i;
+      i = 0;
+    }
+  }
+  newPoints = points.sublist(0, newMaxint);
+  newPoints.add(null);
+  return newPoints;
 }
 
 List<Offset> getPointsFromData(String data) {
