@@ -119,7 +119,7 @@ class _DrawViewState extends State<DrawView> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           buildDrawImageScreen(drawWidth, drawHeight, context, size, imageName),
-          SizedBox(height: size.height * 0.02),
+          SizedBox(height: size.height * 0.03),
           buildDropdownButton(_setEntity, dropdownValue, classCategoryList),
           SizedBox(height: size.height * 0.02),
           buildButtonRow(),
@@ -170,9 +170,9 @@ class _DrawViewState extends State<DrawView> {
             Spacer(),
             IconButton(
               icon: Icon(
-                Icons.undo_sharp,
+                Icons.undo_outlined,
                 color: kPrimaryColor.withOpacity(0.8),
-                size: 30,
+                size: 40,
               ),
               onPressed: () {
                 setState(() {
