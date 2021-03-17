@@ -54,7 +54,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   int _lenList = 0;
   bool _loaded = false;
   List<bool> _done = <bool>[];
-  List<bool> _selectImages = [true, false, false];
+  List<bool> _selectImages = [true, false, false, false];
   bool _filterMode = false;
 
   _ScrollBodyState({@required this.username});
@@ -88,6 +88,7 @@ class _ScrollBodyState extends State<ScrollBody> {
                   Icon(Icons.all_inbox, size: 25),
                   Icon(Icons.category_rounded, size: 25),
                   Icon(Icons.check_box_outlined, size: 25),
+                  Icon(Icons.check_box_outline_blank, size: 25),
                 ],
                 isSelected: _selectImages,
                 renderBorder: false,
@@ -107,7 +108,7 @@ class _ScrollBodyState extends State<ScrollBody> {
     if (index == 0) {
       if (!_selectImages[0]) {
         setState(() {
-          _selectImages = [true, false, false];
+          _selectImages = [true, false, false, false];
           _loaded = false;
         });
         initImages().then(
@@ -122,7 +123,7 @@ class _ScrollBodyState extends State<ScrollBody> {
       }
     } else {
       bool save = !_selectImages[index];
-      _selectImages = [false, false, false];
+      _selectImages = [false, false, false, false];
       // set to loading
       setState(() {
         _loaded = false;

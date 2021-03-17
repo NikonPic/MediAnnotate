@@ -8,7 +8,6 @@ import '../widgets/custom_flat_button.dart';
 import '../widgets/flushbars.dart';
 import '../widgets/loading.dart';
 import '../widgets/points_info.dart';
-import '../widgets/zoom_draw_icon.dart';
 import '../widgets/zoom_window.dart';
 
 class ViewPage extends StatelessWidget {
@@ -75,14 +74,13 @@ class _DrawViewState extends State<DrawView> {
   int _lenList = 1;
   int count;
   String dropdownValue = classCategoryList[0];
-  String dropdownValue2 = classCategoryList2[0];
-  bool drawMode = true;
   TransformationController controller;
 
   //scale tacking
   bool watchScale = false;
   bool scaleChange = false;
   double initScale = 1.0;
+  int updateCount = 0;
 
   final double widthFac = 1;
   final double heightFac = 0.65;
@@ -119,11 +117,11 @@ class _DrawViewState extends State<DrawView> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           buildDrawImageScreen(drawWidth, drawHeight, context, size, imageName),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: size.height * 0.025),
           buildDropdownButton(_setEntity, dropdownValue, classCategoryList),
-          SizedBox(height: size.height * 0.02),
+          SizedBox(height: size.height * 0.03),
           buildButtonRow(),
-          SizedBox(height: size.height * 0.02),
+          SizedBox(height: size.height * 0.01),
           buildBottomSlider(),
         ],
       ),
@@ -148,7 +146,6 @@ class _DrawViewState extends State<DrawView> {
     _points.clear();
 
     dropdownValue = classCategoryList[0];
-    dropdownValue2 = classCategoryList2[0];
     count = newCount.toInt();
     setSavedPoints();
     setState(() {
@@ -194,16 +191,16 @@ class _DrawViewState extends State<DrawView> {
         transformationController: controller,
         panEnabled: false,
         onInteractionStart: (ScaleStartDetails details) {
-          print(details.toString());
           setState(
             () {
+              updateCount = 0;
               watchScale = true;
               scaleChange = false;
             },
           );
         },
         onInteractionUpdate: (ScaleUpdateDetails details) {
-          print(details.toString());
+          updateCount += 1;
           if (!watchScale) {
             if (details.scale != initScale) {
               setState(() {
@@ -219,7 +216,7 @@ class _DrawViewState extends State<DrawView> {
           }
           setState(
             () {
-              if (drawMode) {
+              if (!scaleChange && (updateCount > 6)) {
                 final Offset _localPosition = details.focalPoint;
                 _points = List.from(_points)..add(_localPosition);
               }
@@ -229,9 +226,8 @@ class _DrawViewState extends State<DrawView> {
         onInteractionEnd: (_) {
           setState(
             () {
-              if (drawMode) {
-                _points.add(null);
-              }
+              _points.add(null);
+
               if (scaleChange) {
                 _points = redoPoints(_points);
               }
@@ -333,18 +329,6 @@ class _DrawViewState extends State<DrawView> {
           press: _saveFunc,
         ),
         Spacer(),
-        FlatButton(
-          onPressed: () {
-            setState(
-              () {
-                controller.toScene(Offset.zero);
-                drawMode = !drawMode;
-              },
-            );
-          },
-          child: ToggleDrawZoomIcon(zoomMode: !drawMode),
-        ),
-        Spacer(),
         TitleWithCustomButton(
           buttonName: 'Clear',
           press: _clearFunc,
@@ -369,13 +353,6 @@ class _DrawViewState extends State<DrawView> {
     });
   }
 
-  void _setClinicalWorkflow(String newValue) {
-    setState(() {
-      dropdownValue2 = newValue;
-      _saveFunc();
-    });
-  }
-
   /// Define the string to save
   Future<String> generateSaveString() async {
     final Size size = MediaQuery.of(context).size;
@@ -387,7 +364,7 @@ class _DrawViewState extends State<DrawView> {
 
     String generatedData = formatPoints(_points);
     generatedData =
-        '$generatedData///$drawWidth, $drawHeight, $imgWidth, $imgHeight///$dropdownValue///$dropdownValue2';
+        '$generatedData///$drawWidth, $drawHeight, $imgWidth, $imgHeight///$dropdownValue///';
     return generatedData;
   }
 
@@ -401,13 +378,9 @@ class _DrawViewState extends State<DrawView> {
       if (savedData.split('///').length > 2) {
         dropdownValue = savedData.split('///')[2];
       }
-      if (savedData.split('///').length > 3) {
-        dropdownValue2 = savedData.split('///')[3];
-      }
     } on Exception catch (_) {
       _pointsSaved.clear();
       dropdownValue = classCategoryList[0];
-      dropdownValue2 = classCategoryList2[0];
     }
   }
 
@@ -449,7 +422,6 @@ class _DrawViewState extends State<DrawView> {
     controller.value = Matrix4.identity();
     _points.clear();
     dropdownValue = classCategoryList[0];
-    dropdownValue2 = classCategoryList2[0];
     await setSavedPoints();
     setState(() {});
   }
@@ -461,7 +433,6 @@ class _DrawViewState extends State<DrawView> {
     controller.value = Matrix4.identity();
     _points.clear();
     dropdownValue = classCategoryList[0];
-    dropdownValue2 = classCategoryList2[0];
     await setSavedPoints();
     setState(() {});
   }
@@ -484,13 +455,6 @@ class _DrawViewState extends State<DrawView> {
       await setSavedPoints();
       _points.clear();
       setState(() {});
-    } else if (dropdownValue2 != classCategoryList2[0]) {
-      // only category
-      _points = List.from(_pointsSaved);
-      await writeContent(fileName, await generateSaveString());
-      await setSavedPoints();
-      _points.clear();
-      setState(() {});
     } else {
       showEmptyFlushbar().show(context);
     }
@@ -502,20 +466,17 @@ class _DrawViewState extends State<DrawView> {
     if (_points.length > 0) {
       _points.clear();
       setState(() {});
-    } else if (dropdownValue != classCategoryList[0] ||
-        dropdownValue2 != classCategoryList2[0]) {
+    } else if (dropdownValue != classCategoryList[0]) {
       if (_pointsSaved.length > 0) {
         _points = List.from(_pointsSaved);
       }
       dropdownValue = classCategoryList[0];
-      dropdownValue2 = classCategoryList2[0];
       await writeContent(fileName, await generateSaveString());
       _points.clear();
       setState(() {});
     } else if (_pointsSaved.length > 0) {
       _pointsSaved.clear();
       dropdownValue = classCategoryList[0];
-      dropdownValue2 = classCategoryList2[0];
       await deleteContent(fileName);
       setState(() {});
     } else {

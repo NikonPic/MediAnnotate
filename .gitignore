@@ -40,6 +40,7 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-assets/Neurogen
-assets/Strukturell
+assets/Neurogen*
+assets/Strukturell*
 assets/PNG_external
+assets/TRA

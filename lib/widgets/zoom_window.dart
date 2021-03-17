@@ -21,7 +21,7 @@ class ImageChild extends StatelessWidget {
         color: Colors.black,
         image: DecorationImage(
           image: AssetImage(imageName),
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.contain,
         ),
         boxShadow: [
           BoxShadow(
