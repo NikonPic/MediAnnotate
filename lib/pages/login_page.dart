@@ -55,7 +55,7 @@ class _LoginWithNameState extends State<LoginWithName> {
                   size: size,
                   color: kPrimaryColor.withOpacity(1),
                   radius: 30,
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: goToScrollPage,
                     child: Text(
                       'LOGIN',
