@@ -75,17 +75,18 @@ class _DrawViewState extends State<DrawView> {
   int count;
   String dropdownValue = classCategoryList[0];
   TransformationController controller;
+  Matrix4 prevControllerValue;
 
   //scale tacking
   bool watchScale = false;
   bool scaleChange = false;
-  double initScale = 1.0;
   int updateCount = 0;
 
   final double widthFac = 1;
   final double heightFac = 0.65;
   final String username;
   final List<String> images;
+  final double maxScale = 6.0;
 
   _DrawViewState(
       {@required this.images, @required this.username, @required this.count});
@@ -94,6 +95,7 @@ class _DrawViewState extends State<DrawView> {
   void initState() {
     super.initState();
     controller = TransformationController();
+    prevControllerValue = controller.value;
     setSavedPoints().then(
       (_) => setState(() {
         _lenList = images.length;
@@ -183,16 +185,38 @@ class _DrawViewState extends State<DrawView> {
     );
   }
 
+  /*
+  Undo The Panning Movement
+  */
+  void _resetPan() {
+    double curScale = controller.value[0];
+    double oldScale = prevControllerValue[0];
+
+    if (curScale == oldScale) {
+      Matrix4 newValue = controller.value.clone();
+      newValue[12] = prevControllerValue[12];
+      newValue[13] = prevControllerValue[13];
+      controller.value = newValue;
+    }
+  }
+
   Container buildContainerWithGesture(BuildContext context, double drawHeight,
       double drawWidth, Size size, String imageName) {
     return Container(
       alignment: Alignment.center,
       child: InteractiveViewer(
         transformationController: controller,
-        panEnabled: false,
+        clipBehavior: Clip.none,
+        panEnabled: true,
+        scaleEnabled: true,
+        constrained: true,
+        alignPanAxis: true,
+        minScale: 1.0,
+        maxScale: maxScale,
         onInteractionStart: (ScaleStartDetails details) {
           setState(
             () {
+              prevControllerValue = controller.value;
               updateCount = 0;
               watchScale = true;
               scaleChange = false;
@@ -200,28 +224,31 @@ class _DrawViewState extends State<DrawView> {
           );
         },
         onInteractionUpdate: (ScaleUpdateDetails details) {
-          updateCount += 1;
-          if (!watchScale) {
-            if (details.scale != initScale) {
+          if (!scaleChange) {
+            _resetPan();
+
+            if (details.scale != 1.0) {
               setState(() {
                 scaleChange = true;
               });
             }
+            if (updateCount > 7) {
+              Offset _localPosition = details.localFocalPoint;
+              _localPosition = _localPosition.translate(
+                  -controller.value[12], -controller.value[13]);
+              _localPosition /= controller.value[0];
+
+              _points = List.from(_points)..add(_localPosition);
+            }
+
+            setState(
+              () {
+                _points = _points;
+                prevControllerValue = controller.value;
+                updateCount += 1;
+              },
+            );
           }
-          if (watchScale) {
-            setState(() {
-              initScale = details.scale;
-              watchScale = false;
-            });
-          }
-          setState(
-            () {
-              if (!scaleChange && (updateCount > 6)) {
-                final Offset _localPosition = details.focalPoint;
-                _points = List.from(_points)..add(_localPosition);
-              }
-            },
-          );
         },
         onInteractionEnd: (_) {
           setState(
@@ -235,8 +262,6 @@ class _DrawViewState extends State<DrawView> {
             },
           );
         },
-        minScale: 1.0,
-        maxScale: 6.0,
         child: Stack(
           children: [
             ImageChild(imageName: imageName),

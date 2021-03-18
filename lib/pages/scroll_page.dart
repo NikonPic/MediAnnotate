@@ -52,6 +52,7 @@ class _ScrollBodyState extends State<ScrollBody> {
 
   List<String> _images = <String>[];
   int _lenList = 0;
+  int _allImages = 0;
   bool _loaded = false;
   List<bool> _done = <bool>[];
   List<bool> _selectImages = [true, false, false, false];
@@ -66,6 +67,7 @@ class _ScrollBodyState extends State<ScrollBody> {
       setState(() {
         _images = result;
         _lenList = result.length;
+        _allImages = result.length;
         _done = result.map((e) => false).toList();
         _loaded = true;
       });
@@ -83,16 +85,25 @@ class _ScrollBodyState extends State<ScrollBody> {
               alignment: Alignment.center,
               width: size.width,
               height: size.height * 0.05,
-              child: ToggleButtons(
+              child: Row(
                 children: [
-                  Icon(Icons.all_inbox, size: 25),
-                  Icon(Icons.category_rounded, size: 25),
-                  Icon(Icons.check_box_outlined, size: 25),
-                  Icon(Icons.check_box_outline_blank, size: 25),
+                  Spacer(),
+                  ToggleButtons(
+                    children: [
+                      Icon(Icons.all_inbox, size: 25),
+                      Icon(Icons.category_rounded, size: 25),
+                      Icon(Icons.check_box_outlined, size: 25),
+                      Icon(Icons.check_box_outline_blank, size: 25),
+                    ],
+                    isSelected: _selectImages,
+                    renderBorder: false,
+                    onPressed: (int index) => toggleFunc(index),
+                  ),
+                  Spacer(),
+                  Text(
+                      'Items: $_lenList (${((_lenList / _allImages) * 100).floor()}%)'),
+                  Spacer(),
                 ],
-                isSelected: _selectImages,
-                renderBorder: false,
-                onPressed: (int index) => toggleFunc(index),
               ),
             ),
             buildScrollView(size),
@@ -109,6 +120,23 @@ class _ScrollBodyState extends State<ScrollBody> {
       if (!_selectImages[0]) {
         setState(() {
           _selectImages = [true, false, false, false];
+          _loaded = false;
+        });
+        initImages().then(
+          (result) => setState(
+            () {
+              _images = result;
+              _lenList = result.length;
+              _loaded = true;
+            },
+          ),
+        );
+      }
+    }
+    if (index == 3) {
+      if (!_selectImages[0]) {
+        setState(() {
+          _selectImages = [false, false, false, true];
           _loaded = false;
         });
         initImages().then(

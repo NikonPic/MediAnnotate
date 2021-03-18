@@ -1,4 +1,4 @@
-name: FastSeg
+name: fastseg
 description: A simple and efficient method for medical image segmentation.
 
 # The following line prevents the package from being accidentally published to
