@@ -91,7 +91,8 @@ class _LoginWithNameState extends State<LoginWithName> {
         ),
       );
     } else {
-      showNoNameFlushbar().show(context);
+      final snackBar = showNoNameFlushbar();
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }

@@ -1,11 +1,10 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 import '../core/constants.dart';
 
-Flushbar showSaveFlushbar() {
-  return Flushbar(
-    messageText: Row(
+SnackBar showSaveFlushbar() {
+  return SnackBar(
+    content: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
@@ -26,9 +25,9 @@ Flushbar showSaveFlushbar() {
   );
 }
 
-Flushbar showDeleteFlushbar() {
-  return Flushbar(
-    messageText: Row(
+SnackBar showDeleteFlushbar() {
+  return SnackBar(
+    content: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
@@ -49,9 +48,9 @@ Flushbar showDeleteFlushbar() {
   );
 }
 
-Flushbar showEmptyFlushbar() {
-  return Flushbar(
-    messageText: Row(
+SnackBar showEmptyFlushbar() {
+  return SnackBar(
+    content: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
@@ -72,9 +71,9 @@ Flushbar showEmptyFlushbar() {
   );
 }
 
-Flushbar showNoNameFlushbar() {
-  return Flushbar(
-    messageText: Row(
+SnackBar showNoNameFlushbar() {
+  return SnackBar(
+    content: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(

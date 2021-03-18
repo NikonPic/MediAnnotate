@@ -418,14 +418,14 @@ class _DrawViewState extends State<DrawView> {
         builder: (_) => AlertDialog(
           title: Text("Do you want to save?"),
           actions: [
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   _saveFunc();
                   performFunction(newCount);
                   Navigator.pop(context);
                 },
                 child: Text('Yes')),
-            FlatButton(
+            TextButton(
               onPressed: () {
                 performFunction(newCount);
                 Navigator.pop(context);
@@ -481,7 +481,8 @@ class _DrawViewState extends State<DrawView> {
       _points.clear();
       setState(() {});
     } else {
-      showEmptyFlushbar().show(context);
+      final snackBar = showEmptyFlushbar();
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
@@ -505,7 +506,8 @@ class _DrawViewState extends State<DrawView> {
       await deleteContent(fileName);
       setState(() {});
     } else {
-      showEmptyFlushbar().show(context);
+      final snackBar = showEmptyFlushbar();
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }
