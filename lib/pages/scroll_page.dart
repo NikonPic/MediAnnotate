@@ -57,6 +57,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   List<bool> _done = <bool>[];
   List<bool> _selectImages = [true, false, false, false];
   bool _filterMode = false;
+  int curtoggle = 0;
 
   _ScrollBodyState({required this.username});
 
@@ -116,7 +117,9 @@ class _ScrollBodyState extends State<ScrollBody> {
   }
 
   void toggleFunc(int index) {
-    print(index);
+    setState(() {
+      curtoggle = index;
+    });
     if (index == 0) {
       if (!_selectImages[0]) {
         setState(() {
@@ -212,7 +215,7 @@ class _ScrollBodyState extends State<ScrollBody> {
                               images: _images,
                             ),
                           ),
-                        ).then((_) => setState(() {}))
+                        ).then((_) => toggleFunc(curtoggle))
                       },
                       done: _done[index],
                       username: username,

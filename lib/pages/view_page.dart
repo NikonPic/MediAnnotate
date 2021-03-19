@@ -9,6 +9,7 @@ import '../widgets/flushbars.dart';
 import '../widgets/loading.dart';
 import '../widgets/points_info.dart';
 import '../widgets/zoom_window.dart';
+import '../widgets/dropdownbutton.dart';
 
 class ViewPage extends StatelessWidget {
   final int counter;
@@ -83,7 +84,7 @@ class _DrawViewState extends State<DrawView> {
   int updateCount = 0;
 
   final double widthFac = 1;
-  final double heightFac = 0.65;
+  final double heightFac = 0.68;
   final String username;
   final List<String> images;
   final double maxScale = 6.0;
@@ -120,8 +121,12 @@ class _DrawViewState extends State<DrawView> {
         children: <Widget>[
           buildDrawImageScreen(drawWidth, drawHeight, context, size, imageName),
           SizedBox(height: size.height * 0.025),
-          buildDropdownButton(_setEntity, dropdownValue, classCategoryList),
-          SizedBox(height: size.height * 0.03),
+          MyDropDownButton(
+            doIt: _setEntity,
+            locList: classCategoryList,
+            locValue: dropdownValue,
+          ),
+          SizedBox(height: size.height * 0.02),
           buildButtonRow(),
           SizedBox(height: size.height * 0.01),
           buildBottomSlider(),
@@ -200,6 +205,58 @@ class _DrawViewState extends State<DrawView> {
     }
   }
 
+  void _interactiveStart(ScaleStartDetails details) {
+    setState(
+      () {
+        prevControllerValue = controller!.value;
+        updateCount = 0;
+        watchScale = true;
+        scaleChange = false;
+      },
+    );
+  }
+
+  void _interactiveUpdate(ScaleUpdateDetails details) {
+    if (!scaleChange) {
+      _resetPan();
+
+      if (details.scale != 1.0) {
+        setState(() {
+          scaleChange = true;
+        });
+      }
+      if (updateCount > 7) {
+        Offset _localPosition = details.localFocalPoint;
+        _localPosition = _localPosition.translate(
+            -controller!.value[12], -controller!.value[13]);
+        _localPosition /= controller!.value[0];
+
+        _points = List.from(_points)..add(_localPosition);
+      }
+
+      setState(
+        () {
+          _points = _points;
+          prevControllerValue = controller!.value;
+          updateCount += 1;
+        },
+      );
+    }
+  }
+
+  void _interactiveEnd(_) {
+    setState(
+      () {
+        _points.add(null);
+
+        if (scaleChange) {
+          _points = redoPoints(_points);
+        }
+        _points = redoShortPoints(_points);
+      },
+    );
+  }
+
   Container buildContainerWithGesture(BuildContext context, double drawHeight,
       double drawWidth, Size size, String imageName) {
     return Container(
@@ -213,55 +270,9 @@ class _DrawViewState extends State<DrawView> {
         alignPanAxis: true,
         minScale: 1.0,
         maxScale: maxScale,
-        onInteractionStart: (ScaleStartDetails details) {
-          setState(
-            () {
-              prevControllerValue = controller!.value;
-              updateCount = 0;
-              watchScale = true;
-              scaleChange = false;
-            },
-          );
-        },
-        onInteractionUpdate: (ScaleUpdateDetails details) {
-          if (!scaleChange) {
-            _resetPan();
-
-            if (details.scale != 1.0) {
-              setState(() {
-                scaleChange = true;
-              });
-            }
-            if (updateCount > 7) {
-              Offset _localPosition = details.localFocalPoint;
-              _localPosition = _localPosition.translate(
-                  -controller!.value[12], -controller!.value[13]);
-              _localPosition /= controller!.value[0];
-
-              _points = List.from(_points)..add(_localPosition);
-            }
-
-            setState(
-              () {
-                _points = _points;
-                prevControllerValue = controller!.value;
-                updateCount += 1;
-              },
-            );
-          }
-        },
-        onInteractionEnd: (_) {
-          setState(
-            () {
-              _points.add(null);
-
-              if (scaleChange) {
-                _points = redoPoints(_points);
-              }
-              _points = redoShortPoints(_points);
-            },
-          );
-        },
+        onInteractionStart: _interactiveStart,
+        onInteractionUpdate: _interactiveUpdate,
+        onInteractionEnd: _interactiveEnd,
         child: Stack(
           children: [
             ImageChild(imageName: imageName),
@@ -282,56 +293,6 @@ class _DrawViewState extends State<DrawView> {
               size: size,
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildDropdownButton(
-      Function doIt, String locValue, List<String> locList) {
-    final Color locColor =
-        locValue == locList[0] ? Colors.grey : kSecondaryColor;
-
-    return Container(
-      width: 300,
-      height: 50,
-      decoration: BoxDecoration(
-        color: locColor.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Center(
-            child: DropdownButton<String>(
-              underline: Container(
-                height: 1,
-                color: locColor,
-              ),
-              value: locValue,
-              icon: Icon(
-                Icons.arrow_circle_down,
-                color: locColor,
-              ),
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(fontWeight: FontWeight.bold),
-              onChanged: (String? newValue) {
-                doIt(newValue);
-              },
-              items: locList.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      color: locColor,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
         ),
       ),
     );
