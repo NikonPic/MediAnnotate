@@ -5,10 +5,10 @@ import 'package:path_provider/path_provider.dart';
 import '../widgets/points_info.dart';
 import 'categories.dart';
 
-Future<String> get _localPath async {
+Future<String?> get _localPath async {
   //final directory = await getApplicationDocumentsDirectory();
-  final directory = await (getExternalStorageDirectory() as Future<Directory>);
-  return directory.path;
+  final directory = await (getExternalStorageDirectory());
+  return directory?.path;
 }
 
 Future<File> _localFile(String fileName) async {
