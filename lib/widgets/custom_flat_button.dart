@@ -17,7 +17,7 @@ class TitleWithCustomButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           onPrimary: Colors.black87,
-          primary: kPrimaryColor.withOpacity(0.8),
+          primary: kPrimaryColor.withOpacity(0.6),
           minimumSize: Size(88, 36),
           padding: EdgeInsets.symmetric(horizontal: 16),
           shape: const RoundedRectangleBorder(

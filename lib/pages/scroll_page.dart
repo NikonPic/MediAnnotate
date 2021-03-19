@@ -116,10 +116,11 @@ class _ScrollBodyState extends State<ScrollBody> {
   }
 
   void toggleFunc(int index) {
+    print(index);
     if (index == 0) {
       if (!_selectImages[0]) {
         setState(() {
-          _selectImages = [true, false, false, false];
+          _selectImages = [false, false, false, false];
           _loaded = false;
         });
         initImages().then(
@@ -128,27 +129,27 @@ class _ScrollBodyState extends State<ScrollBody> {
               _images = result;
               _lenList = result.length;
               _loaded = true;
+              _selectImages = [true, false, false, false];
             },
           ),
         );
       }
-    }
-    if (index == 3) {
-      if (!_selectImages[0]) {
-        setState(() {
-          _selectImages = [false, false, false, true];
-          _loaded = false;
+    } else if (index == 3) {
+      setState(() {
+        _loaded = false;
+      });
+      initImages().then((result) {
+        // now pick all images, which are modified
+        initImagesModified(username, 2, _filterMode).then((filtered) {
+          result.removeWhere((element) => filtered.contains(element));
+          setState(() {
+            _images = result;
+            _lenList = result.length;
+            _loaded = true;
+            _selectImages = [false, false, false, true];
+          });
         });
-        initImages().then(
-          (result) => setState(
-            () {
-              _images = result;
-              _lenList = result.length;
-              _loaded = true;
-            },
-          ),
-        );
-      }
+      });
     } else {
       bool save = !_selectImages[index];
       _selectImages = [false, false, false, false];

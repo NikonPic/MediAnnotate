@@ -277,7 +277,7 @@ class _DrawViewState extends State<DrawView> {
               painter: Signature(
                 points: _points,
                 color: Colors.deepOrange,
-                strokeWidth: 2,
+                strokeWidth: 1,
               ),
               size: size,
             ),
