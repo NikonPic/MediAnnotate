@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import '../core/constants.dart';
 
 class PointsInfo extends StatelessWidget {
-  final List<Offset> points;
+  final List<Offset>? points;
 
   const PointsInfo({
-    Key key,
+    Key? key,
     this.points,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final int lenList = points.length;
+    final int lenList = points!.length;
     return lenList > 0 ? buildFull(context) : buildEmpty(context);
   }
 
@@ -23,7 +23,7 @@ class PointsInfo extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              formatPoints(points),
+              formatPoints(points!),
               style: TextStyle(fontSize: 4),
             ),
           ),
@@ -48,7 +48,7 @@ class PointsInfo extends StatelessWidget {
   }
 }
 
-String formatPoints(List<Offset> points) {
+String formatPoints(List<Offset?> points) {
   return points
       .map(
         (offset) {
@@ -67,7 +67,7 @@ String formatPoints(List<Offset> points) {
       .replaceAll('/', ';');
 }
 
-List<Offset> redoShortPoints(List<Offset> points, [int minVal = 20]) {
+List<Offset?> redoShortPoints(List<Offset?> points, [int minVal = 20]) {
   // process trough all points from the until you meet the "null" and remove everything until there
 
   int newMaxint = 0;
@@ -79,17 +79,17 @@ List<Offset> redoShortPoints(List<Offset> points, [int minVal = 20]) {
   }
   // if the used points are below a certain value do not include
   if (points.length - newMaxint < minVal) {
-    List<Offset> newPoints = points.sublist(0, newMaxint);
+    List<Offset?> newPoints = points.sublist(0, newMaxint);
     newPoints.add(null);
     return newPoints;
   }
   return points;
 }
 
-List<Offset> redoPoints(List<Offset> points) {
+List<Offset?> redoPoints(List<Offset?> points) {
   // process trough all points from the until you meet the "null" and remove everything until there
   int newMaxint = 0;
-  List<Offset> newPoints;
+  List<Offset?> newPoints;
 
   for (int i = points.length - 2; i > 0; i--) {
     if (points[i] == null) {
@@ -102,7 +102,7 @@ List<Offset> redoPoints(List<Offset> points) {
   return newPoints;
 }
 
-List<Offset> getPointsFromData(String data) {
+List<Offset?> getPointsFromData(String data) {
   return data.split(';').map((xy) {
     List<String> sublist = xy.split(',');
     if (sublist.length == 2) {

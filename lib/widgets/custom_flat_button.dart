@@ -3,13 +3,13 @@ import '../core/constants.dart';
 
 class TitleWithCustomButton extends StatelessWidget {
   const TitleWithCustomButton({
-    Key key,
+    Key? key,
     this.press,
     this.buttonName,
   }) : super(key: key);
 
-  final VoidCallback press;
-  final String buttonName;
+  final VoidCallback? press;
+  final String? buttonName;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class TitleWithCustomButton extends StatelessWidget {
         ),
         onPressed: press,
         child: Text(
-          buttonName,
+          buttonName!,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 10,

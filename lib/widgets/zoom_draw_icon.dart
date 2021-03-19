@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ToggleDrawZoomIcon extends StatelessWidget {
   const ToggleDrawZoomIcon({
-    Key key,
-    @required this.zoomMode,
+    Key? key,
+    required this.zoomMode,
   }) : super(key: key);
   final bool zoomMode;
 

@@ -3,10 +3,10 @@ import '../core/constants.dart';
 
 class CustomNavigationAppBarViewPage extends StatelessWidget {
   const CustomNavigationAppBarViewPage({
-    Key key,
+    Key? key,
     this.func,
   }) : super(key: key);
-  final VoidCallback func;
+  final VoidCallback? func;
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +19,10 @@ class CustomNavigationAppBarViewPage extends StatelessWidget {
 
 class CustomNavigationAppBarScrollPage extends StatelessWidget {
   const CustomNavigationAppBarScrollPage({
-    Key key,
+    Key? key,
     this.func,
   }) : super(key: key);
-  final VoidCallback func;
+  final VoidCallback? func;
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class PersonalLoadingWidget extends StatelessWidget {
   const PersonalLoadingWidget({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -7,7 +7,7 @@ import 'categories.dart';
 
 Future<String> get _localPath async {
   //final directory = await getApplicationDocumentsDirectory();
-  final directory = await getExternalStorageDirectory();
+  final directory = await (getExternalStorageDirectory() as Future<Directory>);
   return directory.path;
 }
 
@@ -59,7 +59,7 @@ Future<List<bool>> getModifiedInfo(String filePath, String username) async {
     final String fileName = formatFileName(filePath, username);
     final String savedData = await readContent(fileName);
     final String pointsData = savedData.split('///')[0];
-    final List<Offset> pointsSaved = getPointsFromData(pointsData);
+    final List<Offset?> pointsSaved = getPointsFromData(pointsData);
     if (pointsSaved.length > 2) {
       returnBool[0] = true;
     }

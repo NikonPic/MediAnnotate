@@ -16,10 +16,10 @@ class ViewPage extends StatelessWidget {
   final List<String> images;
 
   const ViewPage(
-      {Key key,
-      @required this.counter,
-      @required this.username,
-      @required this.images})
+      {Key? key,
+      required this.counter,
+      required this.username,
+      required this.images})
       : super(key: key);
 
   @override
@@ -56,10 +56,10 @@ class DrawView extends StatefulWidget {
   final List<String> images;
 
   const DrawView(
-      {Key key,
-      @required this.counter,
-      @required this.username,
-      @required this.images})
+      {Key? key,
+      required this.counter,
+      required this.username,
+      required this.images})
       : super(key: key);
 
   @override
@@ -69,13 +69,13 @@ class DrawView extends StatefulWidget {
 
 /// Main State Management and widget building
 class _DrawViewState extends State<DrawView> {
-  List<Offset> _points = <Offset>[];
-  List<Offset> _pointsSaved = <Offset>[];
+  List<Offset?> _points = <Offset?>[];
+  List<Offset?> _pointsSaved = <Offset>[];
   int _lenList = 1;
   int count;
   String dropdownValue = classCategoryList[0];
-  TransformationController controller;
-  Matrix4 prevControllerValue;
+  TransformationController? controller;
+  late Matrix4 prevControllerValue;
 
   //scale tacking
   bool watchScale = false;
@@ -89,13 +89,13 @@ class _DrawViewState extends State<DrawView> {
   final double maxScale = 6.0;
 
   _DrawViewState(
-      {@required this.images, @required this.username, @required this.count});
+      {required this.images, required this.username, required this.count});
 
   @override
   void initState() {
     super.initState();
     controller = TransformationController();
-    prevControllerValue = controller.value;
+    prevControllerValue = controller!.value;
     setSavedPoints().then(
       (_) => setState(() {
         _lenList = images.length;
@@ -151,7 +151,7 @@ class _DrawViewState extends State<DrawView> {
     count = newCount.toInt();
     setSavedPoints();
     setState(() {
-      controller.value = Matrix4.identity();
+      controller!.value = Matrix4.identity();
     });
   }
 
@@ -189,14 +189,14 @@ class _DrawViewState extends State<DrawView> {
   Undo The Panning Movement
   */
   void _resetPan() {
-    double curScale = controller.value[0];
+    double curScale = controller!.value[0];
     double oldScale = prevControllerValue[0];
 
     if (curScale == oldScale) {
-      Matrix4 newValue = controller.value.clone();
+      Matrix4 newValue = controller!.value.clone();
       newValue[12] = prevControllerValue[12];
       newValue[13] = prevControllerValue[13];
-      controller.value = newValue;
+      controller!.value = newValue;
     }
   }
 
@@ -216,7 +216,7 @@ class _DrawViewState extends State<DrawView> {
         onInteractionStart: (ScaleStartDetails details) {
           setState(
             () {
-              prevControllerValue = controller.value;
+              prevControllerValue = controller!.value;
               updateCount = 0;
               watchScale = true;
               scaleChange = false;
@@ -235,8 +235,8 @@ class _DrawViewState extends State<DrawView> {
             if (updateCount > 7) {
               Offset _localPosition = details.localFocalPoint;
               _localPosition = _localPosition.translate(
-                  -controller.value[12], -controller.value[13]);
-              _localPosition /= controller.value[0];
+                  -controller!.value[12], -controller!.value[13]);
+              _localPosition /= controller!.value[0];
 
               _points = List.from(_points)..add(_localPosition);
             }
@@ -244,7 +244,7 @@ class _DrawViewState extends State<DrawView> {
             setState(
               () {
                 _points = _points;
-                prevControllerValue = controller.value;
+                prevControllerValue = controller!.value;
                 updateCount += 1;
               },
             );
@@ -316,7 +316,7 @@ class _DrawViewState extends State<DrawView> {
               iconSize: 24,
               elevation: 16,
               style: TextStyle(fontWeight: FontWeight.bold),
-              onChanged: (String newValue) {
+              onChanged: (String? newValue) {
                 doIt(newValue);
               },
               items: locList.map<DropdownMenuItem<String>>((String value) {
@@ -444,7 +444,7 @@ class _DrawViewState extends State<DrawView> {
     if (count - 1 >= 0) {
       count--;
     }
-    controller.value = Matrix4.identity();
+    controller!.value = Matrix4.identity();
     _points.clear();
     dropdownValue = classCategoryList[0];
     await setSavedPoints();
@@ -455,7 +455,7 @@ class _DrawViewState extends State<DrawView> {
     if (count + 1 < _lenList) {
       count++;
     }
-    controller.value = Matrix4.identity();
+    controller!.value = Matrix4.identity();
     _points.clear();
     dropdownValue = classCategoryList[0];
     await setSavedPoints();
@@ -464,7 +464,7 @@ class _DrawViewState extends State<DrawView> {
 
   /// Save the current segmentation in local repo
   void _saveFunc() async {
-    controller.value = Matrix4.identity();
+    controller!.value = Matrix4.identity();
     final String fileName = formatFileName(images[count], username);
     if (_points.length > 0) {
       //points and possibly category

@@ -3,9 +3,9 @@ import '../core/constants.dart';
 
 class MyProgressIndicator extends StatelessWidget {
   const MyProgressIndicator({
-    Key key,
-    @required int count,
-    @required int lenList,
+    Key? key,
+    required int count,
+    required int lenList,
   })  : _count = count,
         _lenList = lenList,
         super(key: key);

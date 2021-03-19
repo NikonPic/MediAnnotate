@@ -3,8 +3,8 @@ import '../core/constants.dart';
 
 class ImageChild extends StatelessWidget {
   const ImageChild({
-    Key key,
-    @required this.imageName,
+    Key? key,
+    required this.imageName,
   }) : super(key: key);
 
   final String imageName;

@@ -99,11 +99,11 @@ class _LoginWithNameState extends State<LoginWithName> {
 
 class TextFieldContainer extends StatelessWidget {
   const TextFieldContainer({
-    Key key,
-    @required this.size,
-    @required this.child,
-    @required this.color,
-    @required this.radius,
+    Key? key,
+    required this.size,
+    required this.child,
+    required this.color,
+    required this.radius,
   }) : super(key: key);
 
   final Size size;

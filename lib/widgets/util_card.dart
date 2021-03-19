@@ -6,14 +6,14 @@ import '../functionality/paths.dart';
 
 class RecommendUtilCard extends StatelessWidget {
   const RecommendUtilCard({
-    Key key,
-    @required this.imagePath,
-    @required this.name,
-    @required this.category,
-    @required this.percent,
-    @required this.press,
-    @required this.done,
-    @required this.username,
+    Key? key,
+    required this.imagePath,
+    required this.name,
+    required this.category,
+    required this.percent,
+    required this.press,
+    required this.done,
+    required this.username,
   }) : super(key: key);
 
   final String imagePath, name, category, percent, username;

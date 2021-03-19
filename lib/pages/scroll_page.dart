@@ -10,7 +10,7 @@ import '../widgets/util_card.dart';
 import 'view_page.dart';
 
 class ScrollPage extends StatelessWidget {
-  const ScrollPage({Key key, @required this.username}) : super(key: key);
+  const ScrollPage({Key? key, required this.username}) : super(key: key);
   final String username;
 
   get kBackgroundColor => null;
@@ -41,7 +41,7 @@ class ScrollPage extends StatelessWidget {
 
 class ScrollBody extends StatefulWidget {
   final String username;
-  const ScrollBody({Key key, @required this.username}) : super(key: key);
+  const ScrollBody({Key? key, required this.username}) : super(key: key);
 
   @override
   _ScrollBodyState createState() => _ScrollBodyState(username: username);
@@ -58,7 +58,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   List<bool> _selectImages = [true, false, false, false];
   bool _filterMode = false;
 
-  _ScrollBodyState({@required this.username});
+  _ScrollBodyState({required this.username});
 
   @override
   void initState() {
