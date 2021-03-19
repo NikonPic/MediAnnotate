@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 class Signature extends CustomPainter {
   final List<Offset?>? points;
-  final Color? color;
+  final Color color;
   final double? strokeWidth;
 
   Signature({
     this.strokeWidth,
     this.points,
-    this.color,
+    required this.color,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = color!
+      ..color = color
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidth!;
 
