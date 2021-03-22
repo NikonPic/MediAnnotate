@@ -16,12 +16,12 @@ class ViewPage extends StatelessWidget {
   final String username;
   final List<String> images;
 
-  const ViewPage(
-      {Key? key,
-      required this.counter,
-      required this.username,
-      required this.images})
-      : super(key: key);
+  const ViewPage({
+    Key? key,
+    required this.counter,
+    required this.username,
+    required this.images,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +56,12 @@ class DrawView extends StatefulWidget {
   final String username;
   final List<String> images;
 
-  const DrawView(
-      {Key? key,
-      required this.counter,
-      required this.username,
-      required this.images})
-      : super(key: key);
+  const DrawView({
+    Key? key,
+    required this.counter,
+    required this.username,
+    required this.images,
+  }) : super(key: key);
 
   @override
   _DrawViewState createState() =>
@@ -112,7 +112,7 @@ class _DrawViewState extends State<DrawView> {
   Widget buildLoadedView(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final double drawWidth = size.width * widthFac;
-    final double drawHeight = size.height * heightFac;
+    final double drawHeight = size.height - 300;
     final String imageName = _lenList > 0 ? images[count] : 'assets/demo.PNG';
 
     return SingleChildScrollView(
@@ -332,11 +332,19 @@ class _DrawViewState extends State<DrawView> {
     );
   }
 
-  void _setEntity(String newValue) {
+  void _setEntity(String newValue) async {
     setState(() {
       dropdownValue = newValue;
       _saveFunc();
     });
+
+    // if empty and no value selected delete file
+    if (dropdownValue == classCategoryList[0]) {
+      if (_pointsSaved.length == 1) {
+        final String fileName = formatFileName(images[count], username);
+        await deleteContent(fileName);
+      }
+    }
   }
 
   /// Define the string to save
@@ -430,6 +438,13 @@ class _DrawViewState extends State<DrawView> {
     if (_points.length > 0) {
       //points and possibly category
       _pointsSaved = List.from(_points);
+      await writeContent(fileName, await generateSaveString());
+      await setSavedPoints();
+      _points.clear();
+      setState(() {});
+    } else if (_pointsSaved.length > 0) {
+      // only category
+      _points = List.from(_pointsSaved);
       await writeContent(fileName, await generateSaveString());
       await setSavedPoints();
       _points.clear();

@@ -24,8 +24,8 @@ List<String> classCategoryList = [
 List<String> classCategoryList = [
   "select enitity...",
   "cannot be defined",
-  "Neurogen",
-  "Strukturell"
+  "Healthy",
+  "Meniscus Damage"
 ];
 
 List<String> classCategoryList2 = [
