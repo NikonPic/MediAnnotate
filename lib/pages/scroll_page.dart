@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants.dart';
-import '../functionality/categories.dart';
 import '../functionality/navigation.dart';
-import '../functionality/paths.dart';
 import '../functionality/read_images.dart';
 import '../widgets/loading.dart';
 import '../widgets/util_card.dart';
@@ -117,8 +115,11 @@ class _ScrollBodyState extends State<ScrollBody> {
   }
 
   void toggleFunc(int index) {
+    print(index);
     setState(() {
       curtoggle = index;
+      _loaded = false;
+      _selectImages = [false, false, false, false];
     });
     if (index == 0) {
       if (!_selectImages[0]) {
@@ -175,6 +176,9 @@ class _ScrollBodyState extends State<ScrollBody> {
         );
       }
     }
+    setState(() {
+      _loaded = true;
+    });
   }
 
   Future<void> _resetActiveImages(int select) async {
@@ -215,7 +219,9 @@ class _ScrollBodyState extends State<ScrollBody> {
                               images: _images,
                             ),
                           ),
-                        ).then((_) => toggleFunc(curtoggle))
+                        ).then((_) {
+                          toggleFunc(curtoggle);
+                        })
                       },
                       done: _done[index],
                       username: username,
@@ -233,58 +239,5 @@ class _ScrollBodyState extends State<ScrollBody> {
               child: Text('Empty'),
             ),
           );
-  }
-
-  FutureBuilder<String> buildFutureBuilder(int index) {
-    return FutureBuilder(
-      future: readContent(
-        formatFileName(_images[index], username),
-      ),
-      builder: (content, snapshot) {
-        final String data = snapshot.data.toString();
-        bool cl = false;
-        bool cl2 = false;
-        bool sh = false;
-        if (data.length > 0) {
-          if ((data.split('///')[0]).length > 0) {
-            sh = true;
-          }
-          if (data.split('///').length > 2) {
-            if (data.split('///')[2] != classCategoryList[0]) {
-              cl = true;
-            }
-          }
-          if (data.split('///').length > 3) {
-            if (data.split('///')[3] != classCategoryList2[0]) {
-              cl2 = true;
-            }
-          }
-        }
-        if (sh) {
-          return RecommendUtilCard(
-            imagePath: _images[index],
-            category: _images[index].split('/')[1],
-            percent: '',
-            name: _images[index].split('/')[2],
-            press: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ViewPage(
-                    counter: index,
-                    username: username,
-                    images: _images,
-                  ),
-                ),
-              ).then((_) => setState(() {}))
-            },
-            done: _done[index],
-            username: username,
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
   }
 }
