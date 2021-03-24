@@ -51,7 +51,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   List<String> _images = <String>[];
   int _lenList = 0;
   int _allImages = 0;
-  bool _loaded = false;
+  bool loaded = false;
   List<bool> _done = <bool>[];
   List<bool> _selectImages = [true, false, false, false];
   bool _filterMode = false;
@@ -68,14 +68,15 @@ class _ScrollBodyState extends State<ScrollBody> {
         _lenList = result.length;
         _allImages = result.length;
         _done = result.map((e) => false).toList();
-        _loaded = true;
+        loaded = true;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_loaded) {
+    final double fontS = 10;
+    if (loaded) {
       final Size size = MediaQuery.of(context).size;
       return SingleChildScrollView(
         child: Column(
@@ -89,14 +90,49 @@ class _ScrollBodyState extends State<ScrollBody> {
                   Spacer(),
                   ToggleButtons(
                     children: [
-                      Icon(Icons.all_inbox, size: 25),
-                      Icon(Icons.category_rounded, size: 25),
-                      Icon(Icons.check_box_outlined, size: 25),
-                      Icon(Icons.check_box_outline_blank, size: 25),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.all_inbox, size: 25),
+                            Text('All', style: TextStyle(fontSize: fontS))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.category_rounded, size: 25),
+                            Text('Segmented', style: TextStyle(fontSize: fontS))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.check_box_outlined, size: 25),
+                            Text('Classified',
+                                style: TextStyle(fontSize: fontS))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.check_box_outline_blank, size: 25),
+                            Text('Empty Annotation',
+                                style: TextStyle(fontSize: fontS))
+                          ],
+                        ),
+                      ),
                     ],
                     isSelected: _selectImages,
                     renderBorder: false,
                     onPressed: (int index) => toggleFunc(index),
+                    borderWidth: 10,
                   ),
                   Spacer(),
                   Text(
@@ -114,71 +150,58 @@ class _ScrollBodyState extends State<ScrollBody> {
     }
   }
 
-  void toggleFunc(int index) {
-    print(index);
-    setState(() {
-      curtoggle = index;
-      _loaded = false;
-      _selectImages = [false, false, false, false];
-    });
+  void toggleFunc(int index) async {
+    // ensure updating
+    WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {
+          loaded = false;
+          curtoggle = index;
+          _selectImages = [false, false, false, false];
+        }));
+    setState(() {});
     if (index == 0) {
       if (!_selectImages[0]) {
-        setState(() {
-          _selectImages = [false, false, false, false];
-          _loaded = false;
-        });
-        initImages().then(
-          (result) => setState(
-            () {
-              _images = result;
-              _lenList = result.length;
-              _loaded = true;
-              _selectImages = [true, false, false, false];
-            },
-          ),
+        List<String> result = await initImages();
+        setState(
+          () {
+            _images = result;
+            _lenList = result.length;
+            loaded = true;
+          },
         );
       }
     } else if (index == 3) {
+      List<String> result = await initImages();
+      // now pick all images, which are modified
+      List<String> filtered =
+          await initImagesModified(username, 2, _filterMode);
+      result.removeWhere((element) => filtered.contains(element));
       setState(() {
-        _loaded = false;
-      });
-      initImages().then((result) {
-        // now pick all images, which are modified
-        initImagesModified(username, 2, _filterMode).then((filtered) {
-          result.removeWhere((element) => filtered.contains(element));
-          setState(() {
-            _images = result;
-            _lenList = result.length;
-            _loaded = true;
-            _selectImages = [false, false, false, true];
-          });
-        });
+        _images = result;
+        _lenList = result.length;
+        loaded = true;
       });
     } else {
-      bool save = !_selectImages[index];
-      _selectImages = [false, false, false, false];
       // set to loading
       setState(() {
-        _loaded = false;
-        _selectImages[index] = save;
+        _selectImages[index] = true;
       });
       if (_selectImages[index]) {
-        _resetActiveImages(index - 1);
+        await _resetActiveImages(index - 1);
       } else {
-        initImages().then(
-          (result) => setState(
-            () {
-              _images = result;
-              _lenList = result.length;
-              _loaded = true;
-            },
-          ),
+        List<String> result = await initImages();
+        setState(
+          () {
+            _images = result;
+            _lenList = result.length;
+          },
         );
       }
     }
-    setState(() {
-      _loaded = true;
-    });
+    // ensure updating
+    WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {
+          loaded = true;
+          _selectImages[index] = true;
+        }));
   }
 
   Future<void> _resetActiveImages(int select) async {
@@ -190,7 +213,7 @@ class _ScrollBodyState extends State<ScrollBody> {
     setState(() {
       _images = _newImages;
       _lenList = _newImages.length;
-      _loaded = true;
+      loaded = true;
     });
   }
 
