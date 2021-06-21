@@ -50,6 +50,7 @@ flutter:
   assets:
     #- assets/Neurogen/
     #- assets/Strukturell/
-    - assets/PNG_external/
+    #- assets/PNG_external/
+    - assets/osteosarcoma/
     #- assets/Images/
     - assets/demo.PNG

@@ -226,12 +226,18 @@ class _ScrollBodyState extends State<ScrollBody> {
                 itemCount: _lenList,
                 shrinkWrap: false,
                 itemBuilder: (context, index) {
+                  // get trimmed name
+                  String name = _images[index].split('/')[2];
+                  if (name.length > 24) {
+                    name = name.substring(0, 24);
+                  }
+
                   return Center(
                     child: RecommendUtilCard(
                       imagePath: _images[index],
                       category: _images[index].split('/')[1],
                       percent: '',
-                      name: _images[index].split('/')[2],
+                      name: name,
                       press: () => {
                         Navigator.push(
                           context,
