@@ -1,7 +1,7 @@
-/*
 List<String> classCategoryList = [
   "select enitity...",
   "tumor cannot be classified",
+  "Osteomyelitis",
   "Chondrosarkom",
   "Osteosarkom",
   "Ewing-Sarkom",
@@ -19,8 +19,19 @@ List<String> classCategoryList = [
   "Knochenzyste, solitär",
   "Dysplasie, fibröse",
 ];
+
+
+
+/*
+List<String> classCategoryList = [
+  "select enitity...",
+  "cannot be defined",
+  "Neurogen",
+  "Strukturell",
+];
 */
 
+/*
 List<String> classCategoryList = [
   "select enitity...",
   "cannot be defined",
@@ -37,3 +48,5 @@ List<String> classCategoryList2 = [
   'Workflow: 2 - assessment needed',
   'Workflow: 3 - assessment needed'
 ];
+
+*/

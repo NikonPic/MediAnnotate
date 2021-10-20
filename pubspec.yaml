@@ -18,24 +18,24 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  auto_route: ^2.2.0
+  auto_route: ^3.0.1
 
   # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # Use with the CupertinoIcons class for iOS style icons.S
   cupertino_icons: ^1.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  json_annotation: ^4.0.1
-  path_provider: ^2.0.1
-  photo_view: ^0.11.1
+  json_annotation: ^4.1.0
+  path_provider: ^2.0.5
+  photo_view: ^0.13.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -51,6 +51,12 @@ flutter:
     #- assets/Neurogen/
     #- assets/Strukturell/
     #- assets/PNG_external/
-    - assets/osteosarcoma/
+    #- assets/osteosarcoma/
     #- assets/Images/
+    #- assets/Neurogen_06/
+
+    #- assets/Strukturell_09/
+    #- assets/Neurogen_09/
+    - assets/osteosarcoma_data_final/
+
     - assets/demo.PNG

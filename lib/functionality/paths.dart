@@ -68,11 +68,13 @@ Future<List<bool>> getModifiedInfo(String filePath, String username) async {
         returnBool[1] = true;
       }
     }
+    /*
     if (savedData.split('///').length > 3) {
       if (classCategoryList2[0] != savedData.split('///')[3]) {
         returnBool[2] = true;
       }
     }
+    */
   } on Exception catch (_) {}
   return returnBool;
 }

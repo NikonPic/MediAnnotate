@@ -124,11 +124,13 @@ class RecommendUtilCard extends StatelessWidget {
               nCL = false;
             }
           }
+          /*
           if (data.split('///').length > 3) {
             if (data.split('///')[3] != classCategoryList2[0]) {
               nCL2 = false;
             }
           }
+          */
         }
 
         final double iconSize = 20;

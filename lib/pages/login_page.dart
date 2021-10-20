@@ -49,6 +49,9 @@ class _LoginWithNameState extends State<LoginWithName> {
                       border: InputBorder.none,
                     ),
                     onChanged: (value) {},
+                    onFieldSubmitted: (_) {
+                      goToScrollPage();
+                    },
                   ),
                 ),
                 TextFieldContainer(
@@ -67,7 +70,7 @@ class _LoginWithNameState extends State<LoginWithName> {
                   height: 50,
                 ),
                 Text(
-                  "Please contact nikolas.wilhelm@tum.de for support.",
+                  "Developed by M.Sc. Nikolas Wilhelm",
                   style: TextStyle(color: kPrimaryColor),
                 ),
               ],
