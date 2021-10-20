@@ -79,7 +79,7 @@ class RecommendUtilCard extends StatelessWidget {
                                 text: 'Category: ${category.toUpperCase()}',
                                 style: TextStyle(
                                   color: kPrimaryColor.withOpacity(0.5),
-                                  fontSize: 6,
+                                  fontSize: 5,
                                 ),
                               )
                             ],

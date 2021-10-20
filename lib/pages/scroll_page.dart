@@ -84,7 +84,7 @@ class _ScrollBodyState extends State<ScrollBody> {
             Container(
               alignment: Alignment.center,
               width: size.width,
-              height: size.height * 0.06,
+              height: 60,
               child: Row(
                 children: [
                   Spacer(),
