@@ -365,7 +365,9 @@ class _DrawViewState extends State<DrawView> {
   /// load the points from disk
   Future setSavedPoints() async {
     try {
+      print(images[count]);
       final String fileName = formatFileName(images[count], username);
+      print(fileName);
       final String savedData = await readContent(fileName);
       final String pointsData = savedData.split('///')[0];
       _pointsSaved = getPointsFromData(pointsData);

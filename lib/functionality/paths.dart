@@ -31,6 +31,7 @@ Future<String> readContent(String fileName) async {
 
 Future<File> writeContent(String fileName, String data) async {
   final file = await _localFile(fileName);
+  print(fileName);
   // Write the file
   return file.writeAsString(data);
 }
@@ -49,7 +50,7 @@ Future deleteContent(String fileName) async {
 /// atm only identity function
 String formatFileName(String fileName, String name) {
   final List<String> fileNameList = fileName.split('/');
-  return '${name}_${fileNameList[1]}_${fileNameList[2]}';
+  return '${name}_${fileNameList[fileNameList.length - 2]}_${fileNameList[fileNameList.length - 1]}';
 }
 
 /// load the points from disk

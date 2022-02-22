@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../core/constants.dart';
 
@@ -20,7 +22,7 @@ class ImageChild extends StatelessWidget {
         ),
         color: Colors.black,
         image: DecorationImage(
-          image: AssetImage(imageName),
+          image: FileImage(File(imageName)),
           fit: BoxFit.contain,
         ),
         boxShadow: [

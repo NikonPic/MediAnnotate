@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../core/constants.dart';
@@ -36,8 +38,7 @@ class RecommendUtilCard extends StatelessWidget {
                 height: 100,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(imagePath),
-                    fit: BoxFit.fitWidth,
+                    image: FileImage(File(imagePath)),
                   ),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),

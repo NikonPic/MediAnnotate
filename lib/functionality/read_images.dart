@@ -1,21 +1,42 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'paths.dart';
+import 'package:path_provider/path_provider.dart';
 
-Future<List<String>> initImages() async {
+Future<List<String>> initImages({ext = true}) async {
+  if (ext) {
+    final imagePaths = await initNewImages();
+    // sort the images
+    imagePaths.sort((a, b) => a.toString().compareTo(b.toString()));
+
+    return imagePaths;
+  } else {
+    // >> To get paths you need these 2 lines
+    final manifestContent = await rootBundle.loadString('AssetManifest.json');
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    // >> To get paths you need these 2 lines
+
+    final imagePaths = manifestMap.keys
+        .where((String key) => key.contains('assets/'))
+        .where((String key) => key.contains('.png'))
+        .toList();
+
+    // sort the images
+    imagePaths.sort((a, b) => a.toString().compareTo(b.toString()));
+
+    return imagePaths;
+  }
+}
+
+Future<List<String>> initNewImages() async {
   // >> To get paths you need these 2 lines
-  final manifestContent = await rootBundle.loadString('AssetManifest.json');
-  final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-  // >> To get paths you need these 2 lines
-
-  final imagePaths = manifestMap.keys
-      .where((String key) => key.contains('assets/'))
-      .where((String key) => key.contains('.png'))
-      .toList();
-
-  // sort the images
-  imagePaths.sort((a, b) => a.toString().compareTo(b.toString()));
-
+  final directory = await (getExternalStorageDirectory());
+  List<String> imagePaths = [];
+  await directory?.list(recursive: true, followLinks: false).listen((file) {
+    if (file.path.endsWith('.png')) {
+      imagePaths.add(file.path);
+    }
+  }).asFuture();
   return imagePaths;
 }
 
