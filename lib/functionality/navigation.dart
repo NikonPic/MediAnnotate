@@ -12,11 +12,29 @@ class CustomNavigationAppBarViewPage extends StatelessWidget {
 }
 
 class CustomNavigationAppBarScrollPage extends StatelessWidget {
+  final String username;
+  const CustomNavigationAppBarScrollPage({Key? key, required this.username})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Select Image',
-      style: TextStyle(color: kBackgroundColor),
+    String locUsername = username;
+    if (locUsername.length > 24) {
+      locUsername = locUsername.substring(0, 24) + '...';
+    }
+
+    return Row(
+      children: [
+        Text(
+          'Hello $locUsername!',
+        ),
+        Spacer(),
+        Text(
+          'Select Image to start editing',
+          style: TextStyle(fontSize: 12),
+        ),
+        Spacer(),
+      ],
     );
   }
 }

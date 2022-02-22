@@ -72,7 +72,7 @@ class DrawView extends StatefulWidget {
 class _DrawViewState extends State<DrawView> {
   List<Offset?> _points = <Offset?>[];
   List<Offset?> _pointsSaved = <Offset>[];
-  int _lenList = 1;
+  int _lenList = 0;
   int count;
   String dropdownValue = classCategoryList[0];
   TransformationController? controller;

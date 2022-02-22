@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
 import '../core/constants.dart';
 import '../functionality/navigation.dart';
 import '../functionality/read_images.dart';
 import '../widgets/loading.dart';
+import '../widgets/piechart.dart';
 import '../widgets/util_card.dart';
 import 'view_page.dart';
 
@@ -26,7 +26,9 @@ class ScrollPage extends StatelessWidget {
             },
           ),
           elevation: 0,
-          title: CustomNavigationAppBarScrollPage(),
+          title: CustomNavigationAppBarScrollPage(
+            username: username,
+          ),
           backgroundColor: kPrimaryColor,
         ),
       ),
@@ -135,8 +137,11 @@ class _ScrollBodyState extends State<ScrollBody> {
                     borderWidth: 10,
                   ),
                   Spacer(),
-                  Text(
-                      'Items: $_lenList (${((_lenList / _allImages) * 100).floor()}%)'),
+                  Text('Items: $_lenList '),
+                  PieChartSample2(
+                    value1: (_lenList / _allImages) * 100,
+                    value2: ((_allImages - _lenList) / _allImages) * 100,
+                  ),
                   Spacer(),
                 ],
               ),
@@ -151,6 +156,7 @@ class _ScrollBodyState extends State<ScrollBody> {
   }
 
   void toggleFunc(int index) async {
+    print(index);
     // ensure updating
     WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {
           loaded = false;
@@ -170,11 +176,14 @@ class _ScrollBodyState extends State<ScrollBody> {
         );
       }
     } else if (index == 3) {
+      print('HERE!');
       List<String> result = await initImages();
       // now pick all images, which are modified
       List<String> filtered =
-          await initImagesModified(username, 2, _filterMode);
+          await initImagesModified(username, 0, _filterMode);
       result.removeWhere((element) => filtered.contains(element));
+      print(filtered.length);
+      print(filtered);
       setState(() {
         _images = result;
         _lenList = result.length;
@@ -198,10 +207,14 @@ class _ScrollBodyState extends State<ScrollBody> {
       }
     }
     // ensure updating
-    WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {
+    WidgetsBinding.instance?.addPostFrameCallback(
+      (_) => setState(
+        () {
           loaded = true;
           _selectImages[index] = true;
-        }));
+        },
+      ),
+    );
   }
 
   Future<void> _resetActiveImages(int select) async {

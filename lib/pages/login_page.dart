@@ -54,18 +54,6 @@ class _LoginWithNameState extends State<LoginWithName> {
                     },
                   ),
                 ),
-                TextFieldContainer(
-                  size: size,
-                  color: kPrimaryColor.withOpacity(1),
-                  radius: 30,
-                  child: TextButton(
-                    onPressed: goToScrollPage,
-                    child: Text(
-                      'LOGIN',
-                      style: TextStyle(color: kBackgroundColor),
-                    ),
-                  ),
-                ),
                 SizedBox(
                   height: 50,
                 ),
