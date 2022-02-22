@@ -72,7 +72,7 @@ class RecommendUtilCard extends StatelessWidget {
                                 text: '$name\n',
                                 style: const TextStyle(
                                   color: kTextColor,
-                                  fontSize: 8,
+                                  fontSize: 6,
                                 ),
                               ),
                               TextSpan(

@@ -1,22 +1,16 @@
-# FastSeg
-A new app project for fast and efficient medical image annotation.
+# fastseg
 
+A new Flutter project.
 
-## How to use
+## Getting Started
 
-  1. Upload the folder with the images you want to annotate in the assets folder of this project.
-  2. Make sure to change the .gitignore accordingly to avoid uploading files on the server!
-  3. Change the pubspec.yaml file and add the link to your new folder there:
-    - assets:
-      - assets/ExampleFolder/
-  4. If needed change the classCategoryList in 'src/functionality/categories.dart' to be compatible with your categories.
+This project is a starting point for a Flutter application.
 
+A few resources to get you started if this is your first Flutter project:
 
-<img src="assets/demo.PNG"
-     alt="Markdown Monster icon"
-     style="float: left; margin-right: 10px;" />
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-## Contact
-
-Nikolas Wilhelm
-nikolas.wilhelm@tum.de
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

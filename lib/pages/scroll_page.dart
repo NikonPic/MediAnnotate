@@ -228,8 +228,8 @@ class _ScrollBodyState extends State<ScrollBody> {
                 itemBuilder: (context, index) {
                   // get trimmed name
                   String name = _images[index].split('/')[2];
-                  if (name.length > 24) {
-                    name = name.substring(0, 24);
+                  if (name.length > 36) {
+                    name = name.substring(0, 36);
                   }
 
                   return Center(
