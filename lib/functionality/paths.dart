@@ -50,7 +50,7 @@ Future deleteContent(String fileName) async {
 /// atm only identity function
 String formatFileName(String fileName, String name) {
   final List<String> fileNameList = fileName.split('/');
-  return '${name}_${fileNameList[fileNameList.length - 2]}_${fileNameList[fileNameList.length - 1]}';
+  return '$name/${fileNameList[fileNameList.length - 2]}_${fileNameList[fileNameList.length - 1]}';
 }
 
 /// load the points from disk

@@ -40,7 +40,7 @@ class ViewPage extends StatelessWidget {
           backgroundColor: Colors.black,
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[300],
       body: DrawView(
         username: username,
         counter: counter,
@@ -84,7 +84,7 @@ class _DrawViewState extends State<DrawView> {
   int updateCount = 0;
 
   final double widthFac = 1;
-  final double heightFac = 0.68;
+  final double heightFac = 1;
   final String username;
   final List<String> images;
   final double maxScale = 6.0;
@@ -351,7 +351,7 @@ class _DrawViewState extends State<DrawView> {
   Future<String> generateSaveString() async {
     final Size size = MediaQuery.of(context).size;
     final int drawWidth = (size.width * widthFac).toInt();
-    final int drawHeight = (size.height * heightFac).toInt();
+    final int drawHeight = (size.height - 300).toInt();
 
     final int imgWidth = 5;
     final int imgHeight = 5;

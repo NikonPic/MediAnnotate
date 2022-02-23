@@ -96,7 +96,7 @@ class _ScrollBodyState extends State<ScrollBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            Icon(Icons.all_inbox, size: 25),
+                            Icon(Icons.all_inbox, size: 22),
                             Text('All', style: TextStyle(fontSize: fontS))
                           ],
                         ),
@@ -105,7 +105,7 @@ class _ScrollBodyState extends State<ScrollBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            Icon(Icons.category_rounded, size: 25),
+                            Icon(Icons.category_rounded, size: 22),
                             Text('Segmented', style: TextStyle(fontSize: fontS))
                           ],
                         ),
@@ -114,7 +114,7 @@ class _ScrollBodyState extends State<ScrollBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            Icon(Icons.check_box_outlined, size: 25),
+                            Icon(Icons.check_box_outlined, size: 22),
                             Text('Classified',
                                 style: TextStyle(fontSize: fontS))
                           ],
@@ -124,7 +124,7 @@ class _ScrollBodyState extends State<ScrollBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            Icon(Icons.check_box_outline_blank, size: 25),
+                            Icon(Icons.check_box_outline_blank, size: 22),
                             Text('Empty Annotation',
                                 style: TextStyle(fontSize: fontS))
                           ],
@@ -137,10 +137,24 @@ class _ScrollBodyState extends State<ScrollBody> {
                     borderWidth: 10,
                   ),
                   Spacer(),
-                  Text('Items: $_lenList '),
-                  PieChartSample2(
-                    value1: (_lenList / _allImages) * 100,
-                    value2: ((_allImages - _lenList) / _allImages) * 100,
+                  Stack(
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(width: 10),
+                          PieChartNormal(
+                            value1: (_lenList / _allImages) * 100,
+                            value2:
+                                ((_allImages - _lenList) / _allImages) * 100,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '$_lenList/$_allImages',
+                        style: TextStyle(
+                            fontSize: fontS, fontWeight: FontWeight.w400),
+                      )
+                    ],
                   ),
                   Spacer(),
                 ],
@@ -156,7 +170,6 @@ class _ScrollBodyState extends State<ScrollBody> {
   }
 
   void toggleFunc(int index) async {
-    print(index);
     // ensure updating
     WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {
           loaded = false;
@@ -182,8 +195,6 @@ class _ScrollBodyState extends State<ScrollBody> {
       List<String> filtered =
           await initImagesModified(username, 0, _filterMode);
       result.removeWhere((element) => filtered.contains(element));
-      print(filtered.length);
-      print(filtered);
       setState(() {
         _images = result;
         _lenList = result.length;
@@ -240,7 +251,8 @@ class _ScrollBodyState extends State<ScrollBody> {
                 shrinkWrap: false,
                 itemBuilder: (context, index) {
                   // get trimmed name
-                  String name = _images[index].split('/')[2];
+                  String name = _images[index]
+                      .split('/')[_images[index].split('/').length - 1];
                   if (name.length > 33) {
                     name = name.substring(0, 33) + '...';
                   }
@@ -248,7 +260,8 @@ class _ScrollBodyState extends State<ScrollBody> {
                   return Center(
                     child: RecommendUtilCard(
                       imagePath: _images[index],
-                      category: _images[index].split('/')[1],
+                      category: _images[index]
+                          .split('/')[_images[index].split('/').length - 2],
                       percent: '',
                       name: name,
                       press: () => {

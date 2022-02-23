@@ -13,6 +13,7 @@ class ImageChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(imageName);
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(

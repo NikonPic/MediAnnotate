@@ -39,6 +39,7 @@ class RecommendUtilCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: FileImage(File(imagePath)),
+                    fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),

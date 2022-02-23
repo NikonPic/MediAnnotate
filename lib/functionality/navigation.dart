@@ -19,19 +19,31 @@ class CustomNavigationAppBarScrollPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String locUsername = username;
-    if (locUsername.length > 24) {
-      locUsername = locUsername.substring(0, 24) + '...';
+    double fontSize = 14;
+
+    if (locUsername.length > 7) {
+      fontSize = 12;
+    }
+
+    if (locUsername.length > 10) {
+      fontSize = 10;
+    }
+
+    if (locUsername.length > 12) {
+      locUsername = locUsername.substring(0, 12) + '...';
+      fontSize = 8;
     }
 
     return Row(
       children: [
         Text(
           'Hello $locUsername!',
+          style: TextStyle(fontSize: fontSize),
         ),
         Spacer(),
         Text(
           'Select Image to start editing',
-          style: TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: fontSize),
         ),
         Spacer(),
       ],
