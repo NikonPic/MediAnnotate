@@ -171,7 +171,7 @@ class _ScrollBodyState extends State<ScrollBody> {
 
   void toggleFunc(int index) async {
     // ensure updating
-    WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           loaded = false;
           curtoggle = index;
           _selectImages = [false, false, false, false];
@@ -218,7 +218,7 @@ class _ScrollBodyState extends State<ScrollBody> {
       }
     }
     // ensure updating
-    WidgetsBinding.instance?.addPostFrameCallback(
+    WidgetsBinding.instance.addPostFrameCallback(
       (_) => setState(
         () {
           loaded = true;

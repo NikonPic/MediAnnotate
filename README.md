@@ -1,16 +1,38 @@
-# fastseg
+<table>
+  <tr>
+    <td valign="middle">
+      <h1>FastSeg</h1>
+      <p><strong>
+      FastSeg: A Comprehensive Solution for Rapid Medical Dataset Annotation and Deep Learning Model Development
+      </strong></p>
+    </td>
+    <td valign="middle">
+      <img src="assets/demo.PNG" alt="FastSeg Logo" width="200">
+    </td>
+  </tr>
+</table>
 
-A new Flutter project.
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Install the Application on your mobile device
 
-A few resources to get you started if this is your first Flutter project:
+Upload the private annotation data:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+**For Android:**
+`data -> Android -> com.example.fastseg`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Annotate the Images
+
+Select the classes and segmentations:
+
+![Annotation Screens](assets/annoscreens.png)
+
+
+## Export the Annotations
+
+**For Android:**
+`data -> Android -> com.example.fastseg`
+
+Provides the datasets for each user 

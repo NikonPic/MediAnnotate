@@ -1,3 +1,4 @@
+/*
 List<String> classCategoryList = [
   "select enitity...",
   "tumor cannot be classified",
@@ -19,17 +20,15 @@ List<String> classCategoryList = [
   "Knochenzyste, solitär",
   "Dysplasie, fibröse",
 ];
+*/
 
-
-
-/*
 List<String> classCategoryList = [
   "select enitity...",
-  "cannot be defined",
-  "Neurogen",
-  "Strukturell",
+  "Tumour",
+  "No tumour",
+  "unclear",
 ];
-*/
+
 
 /*
 List<String> classCategoryList = [

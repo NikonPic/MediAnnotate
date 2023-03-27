@@ -115,7 +115,6 @@ class RecommendUtilCard extends StatelessWidget {
       builder: (content, snapshot) {
         final String data = snapshot.data.toString();
         bool nCL = true;
-        bool nCL2 = true;
         bool nSH = true;
         if (data.length > 0) {
           if ((data.split('///')[0]).length > 0) {

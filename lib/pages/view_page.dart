@@ -87,7 +87,7 @@ class _DrawViewState extends State<DrawView> {
   final double heightFac = 1;
   final String username;
   final List<String> images;
-  final double maxScale = 6.0;
+  final double maxScale = 8.0;
 
   _DrawViewState(
       {required this.images, required this.username, required this.count});
@@ -175,7 +175,7 @@ class _DrawViewState extends State<DrawView> {
             IconButton(
               icon: Icon(
                 Icons.undo_outlined,
-                color: kPrimaryColor.withOpacity(0.8),
+                color: Colors.red.withOpacity(0.8),
                 size: 40,
               ),
               onPressed: () {
@@ -267,7 +267,7 @@ class _DrawViewState extends State<DrawView> {
         panEnabled: true,
         scaleEnabled: true,
         constrained: true,
-        alignPanAxis: true,
+        panAxis: PanAxis.free,
         minScale: 1.0,
         maxScale: maxScale,
         onInteractionStart: _interactiveStart,
@@ -280,7 +280,7 @@ class _DrawViewState extends State<DrawView> {
               painter: Signature(
                 points: _pointsSaved,
                 color: kSecondaryColor,
-                strokeWidth: 2,
+                strokeWidth: 1,
               ),
               size: size,
             ),
@@ -288,7 +288,7 @@ class _DrawViewState extends State<DrawView> {
               painter: Signature(
                 points: _points,
                 color: Colors.deepOrange,
-                strokeWidth: 1,
+                strokeWidth: 0.5,
               ),
               size: size,
             ),
