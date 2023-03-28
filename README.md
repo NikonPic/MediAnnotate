@@ -1,22 +1,18 @@
-<table>
-  <tr>
-    <td valign="middle">
-      <h1>FastSeg</h1>
-      <p><strong>
-      FastSeg: A Comprehensive Solution for Rapid Medical Dataset Annotation and Deep Learning Model Development
-      </strong></p>
-    </td>
-    <td valign="middle">
-      <img src="assets/demo.PNG" alt="FastSeg Logo" width="200">
-    </td>
-  </tr>
-</table>
+# FastSeg
+> A Comprehensive Solution for Rapid Medical Dataset Annotation and Deep Learning Model Development. Can be analyzed by the [FastSegEvaluator application](https://github.com/NikonPic/FastSegEvaluator).
+
+<p align="center">
+  <img src="assets/mobileapp.png" width="400">
+</p>
+
+
+
 
 
 
 ## Getting Started
 
-### Install the Application on your mobile device
+*Install the Application on your mobile device*
 
 Upload the private annotation data:
 
