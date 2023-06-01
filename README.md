@@ -1,5 +1,5 @@
-# FastSeg
-> A Comprehensive Solution for Rapid Medical Dataset Annotation and Deep Learning Model Development. Can be analyzed by the [FastSegEvaluator application](https://github.com/NikonPic/FastSegEvaluator).
+# MediAnnotate
+> A Comprehensive Solution for Rapid Medical Dataset Annotation and Deep Learning Model Development. Can be analyzed by the [MediAnnotateEvaluator application](https://github.com/NikonPic/MediAnnotateEvaluator).
 
 <p align="center">
   <img src="assets/mobileapp.png" width="400">
